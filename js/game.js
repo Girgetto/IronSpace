@@ -2,6 +2,7 @@ function Game() {
   this.frame = 0;
   this.planet = [];
   this.planet2 = [];
+  this.planet3 = [];
   this.goal = [900, 500];
   this.firstClick = false;
 }
@@ -38,7 +39,7 @@ Game.prototype.start = function(e) {
   }
 };
 
-Game.prototype.level = function() {
+Game.prototype.level = function(ctx) {
   if (this.frame == 1) {
     this.goal = [100, 100];
     this.planet = [500, 500, 50, 1 * 10 ** 8];
@@ -48,6 +49,17 @@ Game.prototype.level = function() {
     this.planet = [800, 500, 50, 1 * 10 ** 8];
     this.planet2 = [500, 100, 70, 1 * 10 ** 8];
     this.firstClick = false;
+  }
+  if(this.frame==3){
+    this.goal = [1000, 500];
+    this.planet = [800, 500, 80, 1 * 10 ** 8];
+    this.planet2 = [500, 300, 70, 1 * 10 ** 8];
+  }
+  if(this.frame== 4){
+    this.goal = [ctx.canvas.width/2, ctx.canvas.height/2];
+    this.planet = [600, 200, 80, 1 * 10 ** 8];
+    this.planet2 = [400, 350, 40, 1 * 10 ** 8];
+    this.planet3 = [600, 600, 70, 1 * 10 ** 8];
   }
   this.frame++;
   return true;
