@@ -13,6 +13,7 @@ $(document).ready(() => {
     game.planet2[1],
     game.planet2[2],
     game.planet2[3]
+    
   );
   var newGoal = new Goal(game.goal[0], game.goal[1]);
 
