@@ -1,5 +1,5 @@
 $(document).ready(() => {
-  var audio = new Audio('audio/BeepBox-Song.mp3');
+  var audio = new Audio("audio/BeepBox-Song.mp3");
   var game = new Game();
   var newSpaceShip = new SpaceShip();
   var newPlanets = new Planets(
@@ -13,7 +13,12 @@ $(document).ready(() => {
     game.planet2[1],
     game.planet2[2],
     game.planet2[3]
-
+  );
+  var newPlanets3 = new Planets(
+    game.planet3[0],
+    game.planet3[1],
+    game.planet3[2],
+    game.planet3[3]
   );
   var newGoal = new Goal(game.goal[0], game.goal[1]);
 
@@ -33,10 +38,10 @@ $(document).ready(() => {
       game.firstFrameDraw(newSpaceShip.ctx);
     }
     //Incomincia la partita
-    if (game.frame != 0 && game.frame != 4) {
+    if (game.frame != 0 && game.frame != 6) {
       update();
       draw();
-    } else if (game.frame == 4) {
+    } else if (game.frame == 6) {
       //Schermata vittoria
       game.winFrame(newSpaceShip.ctx);
     }
@@ -45,9 +50,10 @@ $(document).ready(() => {
 
   function draw() {
     newSpaceShip.draw();
-    newPlanets.draw(newSpaceShip.ctx);
     newGoal.draw(newSpaceShip.ctx);
+    newPlanets.draw(newSpaceShip.ctx);
     newPlanets2.draw(newSpaceShip.ctx);
+    newPlanets3.draw(newSpaceShip.ctx);
   }
 
   function update() {
@@ -56,8 +62,9 @@ $(document).ready(() => {
     newGoal.update(newSpaceShip);
     newPlanets.collision(newSpaceShip);
     newPlanets2.collision(newSpaceShip);
+    newPlanets3.collision(newSpaceShip);
     if (newGoal.collision) {
-      game.level();
+      game.level(newSpaceShip);
       newGoal = new Goal(game.goal[0], game.goal[1]);
       newPlanets = new Planets(
         game.planet[0],
@@ -70,6 +77,12 @@ $(document).ready(() => {
         game.planet2[1],
         game.planet2[2],
         game.planet2[3]
+      );
+      newPlanets3 = new Planets(
+        game.planet3[0],
+        game.planet3[1],
+        game.planet3[2],
+        game.planet3[3]
       );
       newSpaceShip.posX = 50;
       newSpaceShip.posY = newSpaceShip.canvas.height / 2;
