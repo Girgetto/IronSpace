@@ -1,0 +1,32 @@
+function Planets(posX,posY,radius,density){
+    this.posX = posX;
+    this.posY = posY;
+    this.radius = radius;
+    this.area = Math.PI*Math.pow(this.radius,2);
+    this.density = density; 
+    this.mass = this.area * this.density;
+}
+
+Planets.prototype.draw = function(ctx){
+    ctx.beginPath();
+    ctx.arc(this.posX, this.posY, this.radius, 0, Math.PI*2,true);
+    ctx.fillStyle = 'rgb(211,211,211)';
+    ctx.stroke();
+    ctx.strokeStyle = "#fff";
+    ctx.fill();
+    ctx.closePath();
+}
+
+
+//Collision da rivedere 
+Planets.prototype.collision = function(ship){
+    //console.log(this.posX-this.radius,this.posY-this.radius,this.posY+this.radius,this.posY+this.radius)
+    if(ship.posX > this.posX-this.radius && ship.posY>this.posY-this.radius && ship.posX < this.posX+this.radius && ship.posY<this.posY+this.radius){
+        ship.posX = 50;
+        ship.posY = ship.canvas.height / 2;
+        ship.dx = 0;
+        ship.dy = 0;
+        ship.angle = 0;
+        console.log('GAME OVER');
+    }
+}
