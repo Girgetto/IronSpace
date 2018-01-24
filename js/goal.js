@@ -2,13 +2,16 @@ function Goal(posX,posY) {
   this.posX = posX;
   this.posY = posY;
   this.collision = false;
+  this.img = new Image();
+  this.img.src = ('img/descarga.png');
 }
 
 Goal.prototype.draw = function(ctx) {
   ctx.beginPath();
   ctx.fillStyle = "#fff";
   ctx.fillText('GOAL',this.posX+10,this.posY-10);
-  ctx.fillRect(this.posX, this.posY, 50, 50);
+  //ctx.fillRect(this.posX, this.posY, 50, 50);
+  ctx.drawImage(this.img,this.posX, this.posY,50,50);
   ctx.closePath();
 };
 

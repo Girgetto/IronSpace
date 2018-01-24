@@ -8,6 +8,7 @@ function SpaceShip() {
   //this.speed = 0;
   this.dx = 0;
   this.dy = 0;
+  this.audio = new Audio('audio/Rocket Thrusters-SoundBible.com-1432176431.mp3');
 }
 
 SpaceShip.prototype.update = function(newPlanets) {
@@ -82,6 +83,7 @@ SpaceShip.prototype.draw = function() {
 SpaceShip.prototype.move = function(key) {
   switch (key) {
     case 119:
+      this.audio.play();
       if ( (1 > this.angle && this.angle > -1) || (this.angle<-5)) {
         this.dx += 0.1;
       }
