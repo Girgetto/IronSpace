@@ -3,6 +3,7 @@ function Game() {
   this.planet = [];
   this.planet2 = [];
   this.goal = [900, 500];
+  this.firstClick = false;
 }
 
 Game.prototype.firstFrameDraw = function(ctx) {
@@ -31,8 +32,9 @@ Game.prototype.winFrame = function(ctx) {
 };
 
 Game.prototype.start = function(e) {
-  if (e == 13) {
+  if (e == 13 && this.firstClick == false) {
     this.frame++;
+    this.firstClick = true;
   }
 };
 
@@ -45,6 +47,7 @@ Game.prototype.level = function() {
     this.goal = [900, 500];
     this.planet = [800, 500, 50, 1 * 10 ** 8];
     this.planet2 = [500, 100, 70, 1 * 10 ** 8];
+    this.firstClick = false;
   }
   this.frame++;
   return true;

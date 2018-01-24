@@ -5,6 +5,7 @@ function Planets(posX,posY,radius,density){
     this.area = Math.PI*Math.pow(this.radius,2);
     this.density = density; 
     this.mass = this.area * this.density;
+    this.audio = new Audio('audio/metallic_space_impact.mp3');
 }
 
 Planets.prototype.draw = function(ctx){
@@ -27,6 +28,7 @@ Planets.prototype.collision = function(ship){
         ship.dx = 0;
         ship.dy = 0;
         ship.angle = 0;
+        this.audio.play();
         console.log('GAME OVER');
     }
 }
