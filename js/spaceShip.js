@@ -8,9 +8,7 @@ function SpaceShip() {
   //this.speed = 0;
   this.dx = 0;
   this.dy = 0;
-  this.audio = new Audio(
-    "audio/Rocket Thrusters-SoundBible.com-1432176431.mp3"
-  );
+  this.audio = new Audio('audio/Rocket Thrusters-SoundBible.com-1432176431.mp3');
 }
 
 SpaceShip.prototype.update = function(newPlanets) {
@@ -42,7 +40,7 @@ SpaceShip.prototype.update = function(newPlanets) {
   }
 
   //Azzera angolo
-  if (this.angle > 2 * Math.PI || this.angle < -2 * Math.PI) {
+  if(this.angle>2*Math.PI || this.angle<-2*Math.PI){
     this.angle = 0;
   }
 };
@@ -86,37 +84,28 @@ SpaceShip.prototype.move = function(key) {
   switch (key) {
     case 119:
       this.audio.play();
-      if ((1 > this.angle && this.angle > -1) || this.angle < -5) {
+      if ( (1 > this.angle && this.angle > -1) || (this.angle<-5)) {
         this.dx += 0.1;
       }
-      if (
-        (this.angle > 2 && this.angle <= 4) ||
-        (this.angle >= -4 && this.angle < -2)
-      ) {
+      if (this.angle>2 && this.angle<=4 || (this.angle>=-4 && this.angle<-2)) {
         this.dx -= 0.1;
       }
-      if (
-        (this.angle < -0.5 && this.angle > -3) ||
-        (this.angle < 6 && this.angle > 4)
-      ) {
+      if(this.angle < -0.5 && this.angle > -3 || this.angle<6 && this.angle>4){
         this.dy -= 0.1;
       }
-      if (
-        (this.angle > 0.5 && this.angle < 2.5) ||
-        (this.angle < -3 && this.angle > -6)
-      ) {
+      if(this.angle > 0.5 && this.angle < 2.5 || this.angle<-3 && this.angle>-6) {
         this.dy += 0.1;
       }
       break;
     case 97:
-      this.angle -= 0.4; //velocita rotazione
+      this.angle -= 0.4;      //velocita rotazione
       break;
     case 100:
-      this.angle += 0.4; //velocita rotazione
+      this.angle += 0.4;      //velocita rotazione
       break;
-    default:
-      this.dx = 0;
-      this.dy = 0;
-      break;
+    // default:
+    //   this.dx = 0;
+    //   this.dy = 0;
+    //   break;
   }
 };

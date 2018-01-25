@@ -12,10 +12,10 @@ Game.prototype.firstFrameDraw = function(ctx) {
   ctx.beginPath();
   ctx.fillStyle = "#fff";
   ctx.font = "80px serif";
-  ctx.fillText("START", ctx.canvas.width / 3 + 50, ctx.canvas.height / 2);
+  ctx.fillText("IRONSPACE", ctx.canvas.width / 3 -50, ctx.canvas.height / 2);
   ctx.fillText(
-    "(PRESS ENTER)",
-    ctx.canvas.width / 3 - 50,
+    "PRESS ENTER TO START",
+    ctx.canvas.width / 4 - 150,
     ctx.canvas.height / 2 + 70
   );
   ctx.closePath();
@@ -50,15 +50,15 @@ Game.prototype.level = function(ctx) {
     this.planet2 = [500, 100, 70, 1 * 10 ** 8];
     this.firstClick = false;
   }
-  if(this.frame==3){
+  if (this.frame == 3) {
     this.goal = [1000, 500];
     this.planet = [800, 500, 80, 1 * 10 ** 8];
     this.planet2 = [500, 300, 70, 1 * 10 ** 8];
   }
-  if(this.frame== 4){
-    this.goal = [ctx.canvas.width/2, ctx.canvas.height/2];
+  if (this.frame == 4) {
+    this.goal = [ctx.canvas.width / 2, ctx.canvas.height / 2];
     this.planet = [600, 200, 80, 1 * 10 ** 8];
-    this.planet2 = [400, 350, 40, 1 * 10 ** 8];
+    this.planet2 = [400, 350, 60, 1 * 10 ** 8];
     this.planet3 = [600, 600, 70, 1 * 10 ** 8];
   }
   this.frame++;
