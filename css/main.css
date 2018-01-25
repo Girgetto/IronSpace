@@ -1,4 +1,6 @@
 #myCanvas{
+    height: 100%;
+    width: 100%;
     margin: 0 auto;
     border: solid 1px black;
     background:#000 url(http://www.script-tutorials.com/demos/360/images/stars.png) repeat top center;

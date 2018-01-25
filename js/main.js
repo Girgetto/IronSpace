@@ -1,5 +1,5 @@
 $(document).ready(() => {
-  var audio = new Audio("audio/BeepBox-Song.mp3");
+  var audio = new Audio("audio/main.mp3");
   var game = new Game();
   var newSpaceShip = new SpaceShip();
   var newPlanets = new Planets(
@@ -21,13 +21,13 @@ $(document).ready(() => {
     game.planet3[3]
   );
   var newGoal = new Goal(game.goal[0], game.goal[1]);
-
+  
+  audio.play();
   // $("#button-start").click(function() {
   //   startGame();
   // });
 
   $(document).keypress(function(e) {
-    audio.play();
     newSpaceShip.move(e.which);
     game.start(e.which);
   });
