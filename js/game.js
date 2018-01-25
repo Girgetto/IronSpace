@@ -12,12 +12,22 @@ Game.prototype.firstFrameDraw = function(ctx) {
   ctx.beginPath();
   ctx.fillStyle = "#fff";
   ctx.font = "80px serif";
-  ctx.fillText("IRONSPACE", ctx.canvas.width / 3 -50, ctx.canvas.height / 2);
+  ctx.fillText("IRONSPACE", ctx.canvas.width / 3 - 50, ctx.canvas.height / 2);
   ctx.fillText(
     "PRESS ENTER TO START",
     ctx.canvas.width / 4 - 150,
     ctx.canvas.height / 2 + 70
   );
+  ctx.closePath();
+  ctx.restore();
+};
+
+Game.prototype.levelText = function(ctx) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.fillStyle = "#fff";
+  ctx.font = "100px serif";
+  ctx.fillText("LEVEL", 100, 100);
   ctx.closePath();
   ctx.restore();
 };
