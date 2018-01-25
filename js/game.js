@@ -23,13 +23,15 @@ Game.prototype.firstFrameDraw = function(ctx) {
 };
 
 Game.prototype.levelText = function(ctx) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.fillStyle = "#fff";
-  ctx.font = "100px serif";
-  ctx.fillText("LEVEL", 100, 100);
-  ctx.closePath();
-  ctx.restore();
+  if(this.frame!=6 && this.frame!=7){
+    ctx.save();
+    ctx.beginPath();
+    ctx.fillStyle = "#fff";
+    ctx.font = "50px serif";
+    ctx.fillText("LEVEL" + this.frame, 50, 50);
+    ctx.closePath();
+    ctx.restore();
+  }
 };
 
 Game.prototype.winFrame = function(ctx) {
