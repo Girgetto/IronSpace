@@ -39,9 +39,9 @@ $(document).ready(() => {
     }
     //Incomincia la partita
     if (game.frame != 0 && game.frame != 6) {
-      game.levelText(newSpaceShip.ctx);
       update();
       draw();
+      game.levelText(newSpaceShip.ctx);
     } else if (game.frame == 6) {
       //Schermata vittoria
       game.winFrame(newSpaceShip.ctx);
