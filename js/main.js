@@ -21,7 +21,7 @@ $(document).ready(() => {
     game.planet3[3]
   );
   var newGoal = new Goal(game.goal[0], game.goal[1]);
-  
+
   audio.play();
   // $("#button-start").click(function() {
   //   startGame();
@@ -39,6 +39,7 @@ $(document).ready(() => {
     }
     //Incomincia la partita
     if (game.frame != 0 && game.frame != 6) {
+      game.levelText(newSpaceShip.ctx);
       update();
       draw();
     } else if (game.frame == 6) {
