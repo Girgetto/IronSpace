@@ -8,12 +8,15 @@ function Goal(posX,posY) {
 }
 
 Goal.prototype.draw = function(ctx) {
+  ctx.save();
   ctx.beginPath();
   ctx.fillStyle = "#fff";
-  ctx.fillText('TARGET',this.posX+5,this.posY-10);
+  ctx.font='20px invasion'
+  ctx.fillText('TARGET',this.posX-15,this.posY-10);
   //ctx.fillRect(this.posX, this.posY, 50, 50);
   ctx.drawImage(this.img,this.posX, this.posY,50,50);
   ctx.closePath();
+  ctx.restore();
 };
 
 Goal.prototype.update = function(ship,ctx) {
