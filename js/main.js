@@ -35,6 +35,7 @@ $(document).ready(() => {
   function startGame() {
     //Carica schermata inziale
     if (game.frame == 0) {
+      newSpaceShip.ctx.clearRect(0,0,newSpaceShip.canvas.width,newSpaceShip.canvas.height)
       game.firstFrameDraw(newSpaceShip.ctx);
     }
     //Incomincia la partita
