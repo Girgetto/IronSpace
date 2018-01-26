@@ -66,9 +66,9 @@ SpaceShip.prototype.draw = function() {
     this.ctx.save();
     this.ctx.font = '20px invasion'
     this.ctx.fillStyle = '#fff';
-    this.ctx.fillText('W',this.v[0][0]+30, this.v[0][1]+10);
-    this.ctx.fillText('A',this.v[0][0], this.v[0][1]-10);
-    this.ctx.fillText('D',this.v[0][0], this.v[0][1]+30);
+    this.ctx.fillText('W Forward',this.v[0][0]+30, this.v[0][1]+10);
+    this.ctx.fillText('A Turn',this.v[0][0], this.v[0][1]-10);
+    this.ctx.fillText('D Turn',this.v[0][0], this.v[0][1]+30);
     this.ctx.restore();
   }
   this.ctx.closePath();
