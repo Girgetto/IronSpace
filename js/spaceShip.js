@@ -9,6 +9,7 @@ function SpaceShip() {
   this.dx = 0;
   this.dy = 0;
   this.audio = new Audio('audio/Rocket Thrusters-SoundBible.com-1432176431.mp3');
+  this.tutorial = true;
 }
 
 SpaceShip.prototype.update = function(newPlanets) {
@@ -47,23 +48,33 @@ SpaceShip.prototype.update = function(newPlanets) {
 
 SpaceShip.prototype.draw = function() {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  this.ctx.fillText(parseInt(this.posX) + "X", 10, 50); //printa posX
-  this.ctx.fillText(parseInt(this.posY) + "Y", 10, 60); //printa posY
-  this.ctx.fillText(parseInt(this.angle) + "Y", 10, 70); //printa posY
+  // this.ctx.fillText(parseInt(this.posX) + "X", 10, 50); //printa posX
+  // this.ctx.fillText(parseInt(this.posY) + "Y", 10, 60); //printa posY
+  // this.ctx.fillText(parseInt(this.angle) + "Y", 10, 70); //printa posY
   this.ctx.save();
   this.ctx.translate(this.posX, this.posY);
   this.ctx.rotate(this.angle);
-  this.ctx.fillStyle = "rgba(150, 255, 0, 0.3)";
+  this.ctx.fillStyle = "#073763";
   this.ctx.strokeStyle = "#FFF";
   this.ctx.beginPath();
+  //posizione vertici
   this.ctx.moveTo(this.v[0][0], this.v[0][1]);
   this.ctx.lineTo(this.v[1][0], this.v[1][1]);
   this.ctx.lineTo(this.v[2][0], this.v[2][1]);
+  //Tutorial Tasti
+  if(this.tutorial){
+    this.ctx.save();
+    this.ctx.font = '20px invasion'
+    this.ctx.fillStyle = '#fff';
+    this.ctx.fillText('W',this.v[0][0]+30, this.v[0][1]+10);
+    this.ctx.fillText('A',this.v[0][0], this.v[0][1]-10);
+    this.ctx.fillText('D',this.v[0][0], this.v[0][1]+30);
+    this.ctx.restore();
+  }
   this.ctx.closePath();
   this.ctx.stroke();
   this.ctx.fill();
   this.ctx.restore();
-
   //barriere per la navicella
   if (this.posX < 0) {
     this.dx += 0.1;
@@ -85,16 +96,17 @@ SpaceShip.prototype.move = function(key) {
     case 119:
       this.audio.play();
       if ( (1 > this.angle && this.angle > -1) || (this.angle<-5)) {
-        this.dx += 0.1;
+        this.dx += 0.07;
+        this.tutorial = false;
       }
-      if (this.angle>2 && this.angle<=4 || (this.angle>=-4 && this.angle<-2)) {
-        this.dx -= 0.1;
+      if (this.angle>1 && this.angle<=4 || (this.angle>=-4 && this.angle<-2)) {
+        this.dx -= 0.07;
       }
       if(this.angle < -0.5 && this.angle > -3 || this.angle<6 && this.angle>4){
-        this.dy -= 0.1;
+        this.dy -= 0.07;
       }
       if(this.angle > 0.5 && this.angle < 2.5 || this.angle<-3 && this.angle>-6) {
-        this.dy += 0.1;
+        this.dy += 0.07;
       }
       break;
     case 97:
