@@ -22,10 +22,8 @@ $(document).ready(() => {
   );
   var newGoal = new Goal(game.goal[0], game.goal[1]);
 
+  //Musica principale
   audio.play();
-  // $("#button-start").click(function() {
-  //   startGame();
-  // });
 
   $(document).keypress(function(e) {
     newSpaceShip.move(e.which);
@@ -35,7 +33,12 @@ $(document).ready(() => {
   function startGame() {
     //Carica schermata inziale
     if (game.frame == 0) {
-      newSpaceShip.ctx.clearRect(0,0,newSpaceShip.canvas.width,newSpaceShip.canvas.height)
+      newSpaceShip.ctx.clearRect(
+        0,
+        0,
+        newSpaceShip.canvas.width,
+        newSpaceShip.canvas.height
+      );
       game.firstFrameDraw(newSpaceShip.ctx);
     }
     //Incomincia la partita

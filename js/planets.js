@@ -11,7 +11,7 @@ function Planets(posX, posY, radius, density) {
 Planets.prototype.draw = function(ctx) {
   ctx.save();
   ctx.beginPath();
-  ctx.filter = 'blur(10px)';
+  ctx.filter = "blur(10px)";
   ctx.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2, true);
   ctx.fillStyle = "rgb(255, 187, 123)";
   ctx.stroke();

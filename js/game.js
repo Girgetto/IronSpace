@@ -13,7 +13,7 @@ Game.prototype.firstFrameDraw = function(ctx) {
   ctx.fillStyle = "#fff";
   ctx.font = "80px invasion";
   ctx.fillText("IRONSPACE", ctx.canvas.width / 3 - 50, ctx.canvas.height / 2);
-  ctx.font = "50px invasion"
+  ctx.font = "50px invasion";
   ctx.fillText(
     "PRESS ENTER TO START",
     ctx.canvas.width / 4,
@@ -24,7 +24,7 @@ Game.prototype.firstFrameDraw = function(ctx) {
 };
 
 Game.prototype.levelText = function(ctx) {
-  if(this.frame<6){
+  if (this.frame < 6) {
     ctx.save();
     ctx.beginPath();
     ctx.fillStyle = "#fff";
