@@ -21,7 +21,7 @@ SpaceShip.prototype.update = function (newPlanets) {
   // Calcola distanza
   diffX = newPlanets.posX - this.posX;
   diffY = newPlanets.posY - this.posY;
-  distance = Math.sqrt(diffX ** 2) + (diffY ** 2);
+  distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
   // Variazione rispetto alla distanza
   if (newPlanets.posX > this.posX) {
     this.dx += 0.0000000000667 * newPlanets.mass / (distance ** 2);
