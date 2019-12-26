@@ -22,7 +22,7 @@ Goal.prototype.draw = function(ctx) {
   ctx.restore();
 };
 
-Goal.prototype.update = function(ship, ctx) {
+Goal.prototype.update = function(ship) {
   if (
     this.posX < ship.posX &&
     ship.posX < this.posX + 50 &&
