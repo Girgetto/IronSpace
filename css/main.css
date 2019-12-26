@@ -1,19 +1,16 @@
-@font-face{
+@font-face {
     font-family: 'invasion';
-    src:url('../font/INVASION2000.TTF');
+    src: url('../font/INVASION2000.TTF');
 }
 
-body{
+body {
     margin: 0 auto;
 }
 
 
-#myCanvas{
+#myCanvas {
     height: 100vh;
     width: 100vw;
-    background:#000 url(http://www.script-tutorials.com/demos/360/images/stars.png);
-    background-size:100% 100%;
+    background: #000 url(http://www.script-tutorials.com/demos/360/images/stars.png);
+    background-size: 100% 100%;
 }
-
-
-

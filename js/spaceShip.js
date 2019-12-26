@@ -23,21 +23,13 @@ SpaceShip.prototype.collision = function(newPlanets) {
   diffX = newPlanets.posX - this.posX;
   diffY = newPlanets.posY - this.posY;
   distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-  // Variazione rispetto alla distanza
-  if (newPlanets.posX > this.posX) {
+  if (newPlanets.posX > this.posX || newPlanets.posY > this.posY) {
     this.dx += this.gravityFormula(newPlanets);
   }
-  if (newPlanets.posX < this.posX) {
+  if (newPlanets.posX < this.posX || newPlanets.posY < this.posY) {
     this.dx -= this.gravityFormula(newPlanets);
   }
-  if (newPlanets.posY > this.posY) {
-    this.dy += this.gravityFormula(newPlanets);
-  }
-  if (newPlanets.posY < this.posY) {
-    this.dy -= this.gravityFormula(newPlanets);
-  }
   if (distance < newPlanets.radius) {
-    // Distrugge Navicella
     this.dx = 0;
     this.dy = 0;
   }
@@ -46,7 +38,6 @@ SpaceShip.prototype.collision = function(newPlanets) {
 SpaceShip.prototype.update = function() {
   this.posY += this.dy;
   this.posX += this.dx;
-  let diffX = 0;
 
   if (this.angle > 2 * Math.PI || this.angle < -2 * Math.PI) {
     this.angle = 0;
@@ -61,11 +52,9 @@ SpaceShip.prototype.draw = function() {
   this.ctx.fillStyle = "#073763";
   this.ctx.strokeStyle = "#FFF";
   this.ctx.beginPath();
-  // posizione vertici
   this.ctx.moveTo(this.v[0][0], this.v[0][1]);
   this.ctx.lineTo(this.v[1][0], this.v[1][1]);
   this.ctx.lineTo(this.v[2][0], this.v[2][1]);
-  // Tutorial Tasti
   if (this.tutorial) {
     this.ctx.save();
     this.ctx.font = "20px invasion";
@@ -79,7 +68,7 @@ SpaceShip.prototype.draw = function() {
   this.ctx.stroke();
   this.ctx.fill();
   this.ctx.restore();
-  // barriere per la navicella
+
   if (this.posX < 0) {
     this.dx += 0.1;
   }
@@ -94,7 +83,6 @@ SpaceShip.prototype.draw = function() {
   }
 };
 
-// movimenti navicella
 SpaceShip.prototype.move = function(key) {
   switch (key) {
     case 119:
@@ -123,10 +111,10 @@ SpaceShip.prototype.move = function(key) {
       }
       break;
     case 97:
-      this.angle -= 0.4; // velocita rotazione
+      this.angle -= 0.4;
       break;
     case 100:
-      this.angle += 0.4; // velocita rotazione
+      this.angle += 0.4;
       break;
     default:
       this.dx = 0;
