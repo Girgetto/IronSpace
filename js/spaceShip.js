@@ -1,3 +1,5 @@
+const G_CONSTANT = 0.0000000000667;
+
 function SpaceShip() {
   this.canvas = document.getElementById("myCanvas");
   this.ctx = this.canvas.getContext("2d");
@@ -6,7 +8,7 @@ function SpaceShip() {
   this.v = [
     [-5, -10],
     [-5, 0],
-    [10, -5]
+    [10, -5],
   ];
   this.angle = 0;
   this.dx = 0;
@@ -15,11 +17,13 @@ function SpaceShip() {
     "audio/Rocket Thrusters-SoundBible.com-1432176431.mp3"
   );
   this.tutorial = true;
-  this.gravityFormula = newPlanets =>
-    (0.0000000000667 * newPlanets.mass) / distance ** 2;
+  this.throttle = false;
+  this.maxSpeed = 5;
+  this.gravityFormula = (newPlanets) =>
+    (G_CONSTANT * newPlanets.mass) / distance ** 2;
 }
 
-SpaceShip.prototype.collision = function(newPlanets) {
+SpaceShip.prototype.collision = function (newPlanets) {
   diffX = newPlanets.posX - this.posX;
   diffY = newPlanets.posY - this.posY;
   distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
@@ -35,7 +39,7 @@ SpaceShip.prototype.collision = function(newPlanets) {
   }
 };
 
-SpaceShip.prototype.update = function() {
+SpaceShip.prototype.update = function () {
   this.posY += this.dy;
   this.posX += this.dx;
 
@@ -44,7 +48,7 @@ SpaceShip.prototype.update = function() {
   }
 };
 
-SpaceShip.prototype.draw = function() {
+SpaceShip.prototype.draw = function () {
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   this.ctx.save();
   this.ctx.translate(this.posX, this.posY);
@@ -83,42 +87,35 @@ SpaceShip.prototype.draw = function() {
   }
 };
 
-SpaceShip.prototype.move = function(key) {
-  switch (key) {
-    case 119:
-      this.audio.play();
-      if ((this.angle < 1 && this.angle > -1) || this.angle < -5) {
-        this.dx += 0.07;
-        this.tutorial = false;
-      }
-      if (
-        (this.angle > 1 && this.angle <= 4) ||
-        (this.angle >= -4 && this.angle < -2)
-      ) {
-        this.dx -= 0.07;
-      }
-      if (
-        (this.angle < -0.5 && this.angle > -3) ||
-        (this.angle < 6 && this.angle > 4)
-      ) {
-        this.dy -= 0.07;
-      }
-      if (
-        (this.angle > 0.5 && this.angle < 2.5) ||
-        (this.angle < -3 && this.angle > -6)
-      ) {
-        this.dy += 0.07;
-      }
-      break;
-    case 97:
-      this.angle -= 0.4;
-      break;
-    case 100:
-      this.angle += 0.4;
-      break;
-    default:
-      this.dx = 0;
-      this.dy = 0;
-      break;
+SpaceShip.prototype.setListeners = function () {
+  document.onkeydown = function (event) {
+    if (event.keyCode == 37) this.angle += 3;
+    if (event.keyCode == 39) this.angle -= 3;
+    if (event.keyCode == 38) this.throttle = true;
+  }.bind(this);
+  document.onkeyup = function (event) {
+    if (event.keyCode == 38) this.throttle = false;
+  }.bind(this);
+};
+
+SpaceShip.prototype.move = function () {
+  if (this.throttle) {
+    this.dx += Math.cos(this.angle * 2) * 0.15;
+    this.dy += Math.sin(this.angle * 2) * 0.15;
+  } else {
+    this.dx *= 0.98;
+    this.dy *= 0.98;
   }
+  if (this.speed > this.maxSpeed) {
+    this.dx *= this.maxSpeed;
+    this.dy *= this.maxSpeed;
+  }
+
+  this.x += this.dx;
+  this.y += this.dy;
+
+  if (this.x > this.W + 5) this.x = -5;
+  if (this.x < -6) this.x = this.canvas.width + 6;
+  if (this.y > this.H + 5) this.y = -5;
+  if (this.y < -6) this.y = this.canvas.height + 6;
 };
