@@ -1,4 +1,7 @@
 const G_CONSTANT = 0.0000000000667;
+const A_KEY = 65;
+const D_KEY = 68;
+const W_KEY = 87;
 
 function SpaceShip() {
   this.canvas = document.getElementById("myCanvas");
@@ -13,11 +16,12 @@ function SpaceShip() {
   this.angle = 0;
   this.dx = 0;
   this.dy = 0;
-  this.audio = new Audio(
-    "audio/Rocket Thrusters-SoundBible.com-1432176431.mp3"
-  );
+  this.dAngle = 0;
+  this.audio = new Audio("audio/Rocket.mp3");
   this.tutorial = true;
   this.throttle = false;
+  this.isTurningRight = false;
+  this.isTurningLeft = false;
   this.maxSpeed = 5;
   this.gravityFormula = (newPlanets) =>
     (G_CONSTANT * newPlanets.mass) / distance ** 2;
@@ -42,6 +46,12 @@ SpaceShip.prototype.collision = function (newPlanets) {
 SpaceShip.prototype.update = function () {
   this.posY += this.dy;
   this.posX += this.dx;
+  this.angle += this.dAngle;
+
+  if ((this.dx || this.dy) > 0 && !this.throttle) {
+    this.dx -= Math.cos(this.angle) * 0.1;
+    this.dy -= Math.sin(this.angle) * 0.1;
+  }
 
   if (this.angle > 2 * Math.PI || this.angle < -2 * Math.PI) {
     this.angle = 0;
@@ -89,26 +99,36 @@ SpaceShip.prototype.draw = function () {
 
 SpaceShip.prototype.setListeners = function () {
   document.onkeydown = function (event) {
-    if (event.keyCode == 37) this.angle += 3;
-    if (event.keyCode == 39) this.angle -= 3;
-    if (event.keyCode == 38) this.throttle = true;
+    const isTurnRight = () => event.keyCode === D_KEY;
+    const isTurnLeft = () => event.keyCode === A_KEY;
+    const isAccelerate = () => event.keyCode === W_KEY;
+    this.isTurningRight = isTurnRight();
+    this.isTurningLeft = isTurnLeft();
+    this.throttle = isAccelerate();
   }.bind(this);
+
   document.onkeyup = function (event) {
-    if (event.keyCode == 38) this.throttle = false;
+    const isTurnRight = () => event.keyCode === D_KEY;
+    const isTurnLeft = () => event.keyCode === A_KEY;
+    const isAccelerate = () => event.keyCode === W_KEY;
+    this.isTurningRight = !isTurnRight();
+    this.isTurningLeft = !isTurnLeft();
+    this.throttle = !isAccelerate();
   }.bind(this);
 };
 
 SpaceShip.prototype.move = function () {
   if (this.throttle) {
-    this.dx += Math.cos(this.angle * 2) * 0.15;
-    this.dy += Math.sin(this.angle * 2) * 0.15;
-  } else {
-    this.dx *= 0.98;
-    this.dy *= 0.98;
+    this.dx += Math.cos(this.angle) * 1;
+    this.dy += Math.sin(this.angle) * 1;
   }
-  if (this.speed > this.maxSpeed) {
-    this.dx *= this.maxSpeed;
-    this.dy *= this.maxSpeed;
+
+  if (this.isTurningLeft) {
+    this.dAngle -= 0.01;
+  } else if (this.isTurningRight) {
+    this.dAngle += 0.01;
+  } else {
+    this.dAngle = 0;
   }
 
   this.x += this.dx;

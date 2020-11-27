@@ -5,7 +5,8 @@ $(document).ready(() => {
     planet => new Planets(planet[0], planet[1], planet[2], planet[3])
   );
   let newGoal = new Goal(game.goal[0], game.goal[1]);
-
+  newSpaceShip.setListeners();
+  
   $(document).keypress(e => {
     newSpaceShip.move(e.which);
     game.start(e.which);
@@ -68,5 +69,5 @@ $(document).ready(() => {
       game.firstFrameDraw(newSpaceShip.ctx);
     }
   }
-  setInterval(startGame, 1);
+  setInterval(startGame, 1000/30);
 });
