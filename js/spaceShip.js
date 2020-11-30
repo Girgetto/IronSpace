@@ -1,7 +1,13 @@
 const G_CONSTANT = 0.0000000000667;
+const map = {};
 const A_KEY = 65;
 const D_KEY = 68;
 const W_KEY = 87;
+var alias = {
+  D_KEY: 68,
+  W_KEY: 87,
+  A_KEY: 65,
+};
 
 function SpaceShip() {
   this.canvas = document.getElementById("myCanvas");
@@ -48,14 +54,29 @@ SpaceShip.prototype.update = function () {
   this.posX += this.dx;
   this.angle += this.dAngle;
 
-  if ((this.dx || this.dy) > 0 && !this.throttle) {
-    this.dx -= Math.cos(this.angle) * 0.1;
-    this.dy -= Math.sin(this.angle) * 0.1;
-  }
-
   if (this.angle > 2 * Math.PI || this.angle < -2 * Math.PI) {
     this.angle = 0;
   }
+
+  if (this.dy > this.maxSpeed) {
+    this.dy = 5;
+  }
+
+  if (this.dx > this.maxSpeed) {
+    this.dx = 5;
+  }
+
+  if (this.dAngle > 0.05) {
+    this.dAngle = 0.05;
+  }
+
+  if (this.dAngle < -0.05) {
+    this.dAngle = -0.05;
+  }
+
+  this.isTurningRight = map[alias.D_KEY];
+  this.isTurningLeft = map[alias.A_KEY];
+  this.throttle = map[alias.W_KEY];
 };
 
 SpaceShip.prototype.draw = function () {
@@ -84,51 +105,39 @@ SpaceShip.prototype.draw = function () {
   this.ctx.restore();
 
   if (this.posX < 0) {
-    this.dx += 0.1;
+    this.dx *= -1;
   }
   if (this.posY < 0) {
-    this.dy += 0.1;
+    this.dy *= -1;
   }
   if (this.posX > this.canvas.width) {
-    this.dx -= 0.1;
+    this.dx *= -1;
   }
   if (this.posY > this.canvas.height) {
-    this.dy -= 0.1;
+    this.dy *= -1;
   }
 };
 
 SpaceShip.prototype.setListeners = function () {
-  document.onkeydown = function (event) {
-    const isTurnRight = () => event.keyCode === D_KEY;
-    const isTurnLeft = () => event.keyCode === A_KEY;
-    const isAccelerate = () => event.keyCode === W_KEY;
-    this.isTurningRight = isTurnRight();
-    this.isTurningLeft = isTurnLeft();
-    this.throttle = isAccelerate();
-  }.bind(this);
-
-  document.onkeyup = function (event) {
-    const isTurnRight = () => event.keyCode === D_KEY;
-    const isTurnLeft = () => event.keyCode === A_KEY;
-    const isAccelerate = () => event.keyCode === W_KEY;
-    this.isTurningRight = !isTurnRight();
-    this.isTurningLeft = !isTurnLeft();
-    this.throttle = !isAccelerate();
-  }.bind(this);
+  onkeydown = onkeyup = function (e) {
+    this.tutorial = false;
+    e = e || event;
+    map[e.keyCode] = e.type == "keydown";
+  };
 };
 
 SpaceShip.prototype.move = function () {
-  if (this.throttle) {
-    this.dx += Math.cos(this.angle) * 1;
-    this.dy += Math.sin(this.angle) * 1;
-  }
-
   if (this.isTurningLeft) {
-    this.dAngle -= 0.01;
+    this.dAngle -= 0.1;
   } else if (this.isTurningRight) {
-    this.dAngle += 0.01;
+    this.dAngle += 0.1;
   } else {
     this.dAngle = 0;
+  }
+
+  if (this.throttle) {
+    this.dx += Math.cos(this.angle) * 5;
+    this.dy += Math.sin(this.angle) * 5;
   }
 
   this.x += this.dx;
