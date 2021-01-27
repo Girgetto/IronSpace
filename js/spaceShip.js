@@ -1,4 +1,4 @@
-const G_CONSTANT = 0.0000000000667;
+let G_CONSTANT = 0.0000000667;
 const map = {};
 const A_KEY = 65;
 const D_KEY = 68;
@@ -29,21 +29,23 @@ function SpaceShip() {
   this.isTurningRight = false;
   this.isTurningLeft = false;
   this.maxSpeed = 5;
-  this.gravityFormula = (newPlanets) =>
-    (G_CONSTANT * newPlanets.mass) / distance ** 2;
+  this.gravityFormula = (planet) =>
+    (G_CONSTANT * planet.mass) / distance ** 2;
 }
 
-SpaceShip.prototype.collision = function (newPlanets) {
-  diffX = newPlanets.posX - this.posX;
-  diffY = newPlanets.posY - this.posY;
+SpaceShip.prototype.collision = function (planet) {
+  diffX = planet.posX - this.posX;
+  diffY = planet.posY - this.posY;
   distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-  if (newPlanets.posX > this.posX || newPlanets.posY > this.posY) {
-    this.dx += this.gravityFormula(newPlanets);
+  if (planet.posX > this.posX || planet.posY > this.posY) {
+    this.dx += this.gravityFormula(planet);
+    this.dy += this.gravityFormula(planet);
   }
-  if (newPlanets.posX < this.posX || newPlanets.posY < this.posY) {
-    this.dx -= this.gravityFormula(newPlanets);
+  if (planet.posX < this.posX || planet.posY < this.posY) {
+    this.dx -= this.gravityFormula(planet);
+    this.dy -= this.gravityFormula(planet);
   }
-  if (distance < newPlanets.radius) {
+  if (distance < planet.radius) {
     this.dx = 0;
     this.dy = 0;
   }
@@ -53,6 +55,7 @@ SpaceShip.prototype.update = function () {
   this.posY += this.dy;
   this.posX += this.dx;
   this.angle += this.dAngle;
+  this.move();
 };
 
 SpaceShip.prototype.draw = function () {
@@ -104,6 +107,7 @@ SpaceShip.prototype.setListeners = function () {
 
 SpaceShip.prototype.move = function () {
   if (map[W_KEY]) {
+    this.tutorial = false;
     this.dx += Math.cos(this.angle) * 10;
     this.dy += Math.sin(this.angle) * 10;
   } else {

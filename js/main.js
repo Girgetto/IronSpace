@@ -40,7 +40,6 @@ $(document).ready(() => {
   function update() {
     newPlanets.forEach(planet => newSpaceShip.collision(planet));
     newSpaceShip.update();
-    newSpaceShip.move();
     newGoal.update(newSpaceShip);
     newPlanets.forEach(planet => {
       planet.collision(newSpaceShip);
