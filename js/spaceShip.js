@@ -1,4 +1,4 @@
-let G_CONSTANT = 0.0000000667;
+const G_CONSTANT = 0.0000000667;
 const map = {};
 const A_KEY = 65;
 const D_KEY = 68;
