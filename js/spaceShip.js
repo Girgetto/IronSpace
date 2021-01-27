@@ -53,30 +53,6 @@ SpaceShip.prototype.update = function () {
   this.posY += this.dy;
   this.posX += this.dx;
   this.angle += this.dAngle;
-
-  if (this.angle > 2 * Math.PI || this.angle < -2 * Math.PI) {
-    this.angle = 0;
-  }
-
-  if (this.dy > this.maxSpeed) {
-    this.dy = 5;
-  }
-
-  if (this.dx > this.maxSpeed) {
-    this.dx = 5;
-  }
-
-  if (this.dAngle > 0.05) {
-    this.dAngle = 0.05;
-  }
-
-  if (this.dAngle < -0.05) {
-    this.dAngle = -0.05;
-  }
-
-  this.isTurningRight = map[alias.D_KEY];
-  this.isTurningLeft = map[alias.A_KEY];
-  this.throttle = map[alias.W_KEY];
 };
 
 SpaceShip.prototype.draw = function () {
@@ -127,17 +103,26 @@ SpaceShip.prototype.setListeners = function () {
 };
 
 SpaceShip.prototype.move = function () {
-  if (this.isTurningLeft) {
-    this.dAngle -= 0.1;
-  } else if (this.isTurningRight) {
-    this.dAngle += 0.1;
+  if (map[W_KEY]) {
+    this.dx += Math.cos(this.angle) * 10;
+    this.dy += Math.sin(this.angle) * 10;
   } else {
-    this.dAngle = 0;
+    this.dx *= 0.99;
+    this.dy *= 0.99;
   }
 
-  if (this.throttle) {
-    this.dx += Math.cos(this.angle) * 5;
-    this.dy += Math.sin(this.angle) * 5;
+  if (map[A_KEY]) {
+    this.angle -= 0.1;
+  }
+
+  if (map[D_KEY]) {
+    this.angle += 0.1;
+  }
+
+  let speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+  if (speed > this.maxSpeed) {
+    this.dx *= this.maxSpeed / speed;
+    this.dy *= this.maxSpeed / speed;
   }
 
   this.x += this.dx;

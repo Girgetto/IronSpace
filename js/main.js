@@ -5,10 +5,9 @@ $(document).ready(() => {
     planet => new Planets(planet[0], planet[1], planet[2], planet[3])
   );
   let newGoal = new Goal(game.goal[0], game.goal[1]);
-  newSpaceShip.setListeners();
   
   $(document).keypress(e => {
-    newSpaceShip.move(e.which);
+    newSpaceShip.setListeners(e.which);
     game.start(e.which);
   });
 
@@ -41,6 +40,7 @@ $(document).ready(() => {
   function update() {
     newPlanets.forEach(planet => newSpaceShip.collision(planet));
     newSpaceShip.update();
+    newSpaceShip.move();
     newGoal.update(newSpaceShip);
     newPlanets.forEach(planet => {
       planet.collision(newSpaceShip);
