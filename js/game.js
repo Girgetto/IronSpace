@@ -1,11 +1,11 @@
 function Game() {
   this.frame = 0;
   this.planets = [];
-  this.goal = [900, 500];
+  this.goal = [200, 400];
   this.firstClick = false;
 }
 
-Game.prototype.firstFrameDraw = function(ctx) {
+Game.prototype.firstFrameDraw = function (ctx) {
   ctx.save();
   ctx.beginPath();
   ctx.fillStyle = "#fff";
@@ -21,7 +21,7 @@ Game.prototype.firstFrameDraw = function(ctx) {
   ctx.restore();
 };
 
-Game.prototype.levelText = function(ctx) {
+Game.prototype.levelText = function (ctx) {
   if (this.frame < 6) {
     ctx.save();
     ctx.beginPath();
@@ -33,7 +33,7 @@ Game.prototype.levelText = function(ctx) {
   }
 };
 
-Game.prototype.winFrame = function(ctx) {
+Game.prototype.winFrame = function (ctx) {
   ctx.save();
   ctx.beginPath();
   ctx.fillStyle = "#fff";
@@ -43,15 +43,20 @@ Game.prototype.winFrame = function(ctx) {
   ctx.restore();
 };
 
-Game.prototype.start = function(e) {
+Game.prototype.start = function (e) {
   if (e === 13 && this.firstClick === false) {
     this.frame++;
     this.firstClick = true;
   }
 };
 
-Game.prototype.level = function(ctx) {
-  var levels = [null, level1, level2, level3, level4(ctx)];
+Game.prototype.level = function (ctx) {
+  var levels = [
+    level1,
+    level2,
+    level3,
+    level4(ctx),
+  ];
 
   this.planets = levels[this.frame];
 

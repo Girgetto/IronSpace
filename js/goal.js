@@ -11,7 +11,7 @@ function Goal(posX, posY) {
   this.audio = new Audio("audio/nextLevel.mp3");
 }
 
-Goal.prototype.draw = function(ctx) {
+Goal.prototype.draw = function (ctx) {
   ctx.save();
   ctx.beginPath();
   ctx.fillStyle = "#fff";
@@ -22,16 +22,16 @@ Goal.prototype.draw = function(ctx) {
   ctx.restore();
 };
 
-Goal.prototype.update = function(ship) {
+Goal.prototype.update = function (ship) {
   if (
-    this.posX < ship.posX &&
-    ship.posX < this.posX + 50 &&
-    this.posY < ship.posY &&
-    ship.posY < this.posY + 50
+    this.posX <= ship.posX &&
+    ship.posX <= this.posX + 50 &&
+    this.posY <= ship.posY &&
+    ship.posY <= this.posY + 50
   ) {
     this.audio.play();
     this.collision = true;
     return true;
   }
-  return 0;
+  return false;
 };
