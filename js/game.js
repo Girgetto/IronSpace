@@ -1,5 +1,6 @@
 function Game() {
-  this.frame = 0;
+  this.level = 0;
+  this.score = 0;
   this.planets = [];
   this.goal = [200, 400];
   this.firstClick = false;
@@ -22,12 +23,12 @@ Game.prototype.firstFrameDraw = function (ctx) {
 };
 
 Game.prototype.levelText = function (ctx) {
-  if (this.frame < 6) {
+  if (this.level < 6) {
     ctx.save();
     ctx.beginPath();
     ctx.fillStyle = "#fff";
     ctx.font = "50px invasion";
-    ctx.fillText(`LEVEL${this.frame}`, 50, 50);
+    ctx.fillText(`LEVEL${this.level}`, 50, 50);
     ctx.closePath();
     ctx.restore();
   }
@@ -45,24 +46,25 @@ Game.prototype.winFrame = function (ctx) {
 
 Game.prototype.start = function (e) {
   if (e === 13 && this.firstClick === false) {
-    this.frame++;
+    this.level++;
     this.firstClick = true;
   }
 };
 
-Game.prototype.level = function (ctx) {
-  var levels = [
+Game.prototype.setLevel = function (ctx) {
+  const levels = [
+    null,
     level1,
     level2,
     level3,
     level4(ctx),
   ];
 
-  this.planets = levels[this.frame];
+  this.planets = levels[this.level].planets;
 
-  this.goal = this.planets && this.planets.goal;
+  this.goal = levels[this.level].goal;
 
-  this.frame++;
+  this.level++;
 
   return true;
 };

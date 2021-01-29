@@ -8,7 +8,7 @@ function Goal(posX, posY) {
   this.collision = false;
   this.img = new Image();
   this.img.src = "img/descarga.png";
-  this.audio = new Audio("audio/nextLevel.mp3");
+  //this.audio = new Audio("audio/nextLevel.mp3");
 }
 
 Goal.prototype.draw = function (ctx) {
@@ -23,15 +23,14 @@ Goal.prototype.draw = function (ctx) {
 };
 
 Goal.prototype.update = function (ship) {
-  if (
+  const checkCollisionWithShip = () =>
     this.posX <= ship.posX &&
     ship.posX <= this.posX + 50 &&
     this.posY <= ship.posY &&
-    ship.posY <= this.posY + 50
-  ) {
-    this.audio.play();
-    this.collision = true;
-    return true;
-  }
-  return false;
+    ship.posY <= this.posY + 50;
+
+  //this.audio.play();
+  this.collision = checkCollisionWithShip();
+
+  return checkCollisionWithShip();
 };

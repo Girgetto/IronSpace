@@ -1,9 +1,7 @@
 $(document).ready(() => {
   const game = new Game();
   const newSpaceShip = new SpaceShip();
-  let newPlanets = game.planets.map(
-    (planet) => new Planets(planet[0], planet[1], planet[2], planet[3])
-  );
+  let newPlanets = game.planets.map((planet) => new Planets(planet));
   let newGoal = new Goal(game.goal[0], game.goal[1]);
   let isOver = false;
 
@@ -30,14 +28,12 @@ $(document).ready(() => {
     newGoal.collision = false;
   }
 
-  function checkCollisions() {
+  function checkCollisionsWithGoal() {
     if (newGoal.collision) {
-      game.level(newSpaceShip);
+      game.setLevel(newSpaceShip);
       newGoal = new Goal(game.goal[0], game.goal[1]);
 
-      newPlanets = game.planets.planets.map(
-        (planet) => new Planets(planet[0], planet[1], planet[2], planet[3])
-      );
+      newPlanets = game.planets.map((planet) => new Planets(planet));
       reset();
     }
   }
@@ -49,7 +45,7 @@ $(document).ready(() => {
     newPlanets.forEach((planet) => {
       planet.collision(newSpaceShip);
     });
-    checkCollisions();
+    checkCollisionsWithGoal();
   }
 
   function clearSpaceShip() {
@@ -63,11 +59,11 @@ $(document).ready(() => {
 
   function applyCommands(angle) {
     newSpaceShip.angle = angle;
-    newSpaceShip.dx = Math.cos(angle) * 100;
-    newSpaceShip.dy = Math.sin(angle) * 100;
+    newSpaceShip.dx = Math.cos(angle);
+    newSpaceShip.dy = Math.sin(angle);
     update();
-    if (isOver) return { isOver: true, reward: game.frame };
-    return { isOver: false, reward: game.frame };
+    if (isOver) return { isOver: true, reward: game.level };
+    return { isOver: false, reward: game.level };
   }
 
   function startGame() {
@@ -75,13 +71,13 @@ $(document).ready(() => {
       update();
       draw(newPlanets);
       game.levelText(newSpaceShip.ctx);
-    } else if (game.frame === 6) {
+    } else if (game.level === 6) {
       game.winFrame(newSpaceShip.ctx);
     } else {
       clearSpaceShip();
       game.firstFrameDraw(newSpaceShip.ctx);
     }
   }
-  startTs(reset, startGame, applyCommands);
-  //setInterval(startGame, 1000 / 30);
+  //startTs(reset, startGame, applyCommands);
+  setInterval(startGame, 1000 / 30);
 });

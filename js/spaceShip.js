@@ -23,14 +23,14 @@ function SpaceShip() {
   this.dx = 0;
   this.dy = 0;
   this.dAngle = 0;
-  this.audio = new Audio("audio/Rocket.mp3");
+  //this.audio = new Audio("audio/rocket.mp3");
   this.tutorial = true;
   this.throttle = false;
   this.isTurningRight = false;
   this.isTurningLeft = false;
   this.maxSpeed = 5;
   this.gravityFormula = (planet) =>
-    (G_CONSTANT * planet.mass) / distance ** 2;
+    (G_CONSTANT * planet.mass) / Math.pow(distance, 2);
 }
 
 SpaceShip.prototype.collision = function (planet) {
