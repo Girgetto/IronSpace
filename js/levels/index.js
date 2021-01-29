@@ -10,7 +10,6 @@ const level2 = {
     { posX: 800, posY: 500, radius: 50, density: Math.pow(10, 8) },
     { posX: 500, posY: 100, radius: 70, density: Math.pow(10, 8) },
   ],
-  firstClick: false,
 };
 
 const level3 = {

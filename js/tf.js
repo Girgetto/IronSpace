@@ -10,12 +10,15 @@ function TF(spaceship, clearInterval, game, reset) {
   this.reset = reset;
   this.stepCounter = 0;
   this.gameCounter = 0;
+  this.moves = [-0.1, 0.1, 0];
 }
 
 TF.prototype.someRandomGame = function () {
   let { score, level } = this.game;
   if (this.stepCounter < goalSteps && score > 0) {
-    this.spaceship.angle += Math.random() < 0.5 ? -0.1 : 0.1;
+    this.spaceship.angle += this.moves[
+      Math.floor(Math.random() * (2 - 0))
+    ];
     this.spaceship.throttle = true;
     this.stepCounter++;
   } else if (this.gameCounter < initialGames) {

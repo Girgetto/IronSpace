@@ -1,40 +1,44 @@
 $(document).ready(() => {
-  const game = new Game();
   const spaceShip = new SpaceShip();
-  let planets = game.planets.map((planet) => new Planets(planet));
-  let goal = new Goal(game.goal);
+  const game = new Game(spaceShip.ctx);
+  let interval = null;
+  let goal = null;
+  let planets = null;
 
-  $(document).keypress((e) => {
-    spaceShip.setListeners(e.which);
-    game.start(e.which, spaceShip);
-  });
-
-  function draw(planetsToDraw) {
+  function draw() {
     spaceShip.draw();
     goal.draw(spaceShip.ctx);
-    planetsToDraw.forEach((planet) => {
+    game.levelText(spaceShip.ctx);
+    planets.forEach((planet) => {
       planet.draw(spaceShip.ctx);
     });
   }
 
-  function resetGame() {
+  function resetSpaceShip() {
     spaceShip.posX = 50;
     spaceShip.posY = spaceShip.canvas.height / 2;
     spaceShip.angle = 0;
     spaceShip.speed = 0;
     spaceShip.dx = 0;
     spaceShip.dy = 0;
-    goal.collision = false;
-    game.score = 100;
+  }
+
+  function resetGame() {
+    resetSpaceShip();
+    game.level = 0;
+    game.setLevel();
+    goal = new Goal(game.goal);
+    planets = game.planets.map((planet) => new Planets(planet));
+    game.firstClick = true;
   }
 
   function checkCollisionsWithGoal() {
     if (goal.collision) {
-      game.setLevel(spaceShip);
-      goal = new Goal(game.goal[0], game.goal[1]);
-
+      game.setLevel();
+      game.level++;
+      resetSpaceShip();
+      goal = new Goal(game.goal);
       planets = game.planets.map((planet) => new Planets(planet));
-      resetGame();
     }
   }
 
@@ -60,27 +64,36 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    tenserFlow.someRandomGame();
+    //tenserFlow.someRandomGame();
     if (checkIfGameOver()) {
-      clearInterval(interval);
-      startGame();
-      game.drawGameOver(spaceShip.ctx);
+      resetGame();
       clearCanvas();
+      game.drawGameOver();
+      clearInterval(interval);
     }
   }
 
-  function startGame() {
-    if (game.level !== 0 && game.level !== 6) {
-      update();
-      draw(planets);
-      game.levelText(spaceShip.ctx);
-    } else if (game.level === 6) {
-      game.winFrame(spaceShip.ctx);
-    } else {
-      clearCanvas();
-      game.firstFrameDraw(spaceShip.ctx);
+  $(document).keypress((e) => {
+    if (e.which === 13 && game.firstClick) {
+      spaceShip.setListeners(e.which);
+      resetGame();
+      interval = game.start(e.which, engine);
     }
+  });
+
+  function engine() {
+    update();
+    draw();
   }
+
+  if (game.level !== 0) {
+    interval = game.start(e.which, engine);
+  } else if (game.level === 6) {
+    game.winFrame();
+  } else {
+    clearCanvas();
+    game.firstFrameDraw();
+  }
+
   const tenserFlow = new TF(spaceShip, clearInterval, game, resetGame);
-  const interval = setInterval(startGame, 1000 / 30);
 });
