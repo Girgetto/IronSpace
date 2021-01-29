@@ -1,23 +1,31 @@
 /* eslint-disable no-unused-vars */
-const goalSteps = 10;
+const goalSteps = 500;
 const scoreRequirement = 1;
 const initialGames = 100;
 
-function TF() {}
+function TF(spaceship, clearInterval, game, reset) {
+  this.spaceship = spaceship;
+  this.clearInterval = clearInterval;
+  this.game = game;
+  this.reset = reset;
+  this.stepCounter = 0;
+  this.gameCounter = 0;
+}
 
-TF.prototype.someRandomGame = function (spaceship, clearInterval, game) {
-  let stepCounter = 0;
-  let gameCounter = 0;
-  if (stepCounter < goalSteps) {
-    spaceship.angle += Math.random() < 0.5 ? -0.1 : 0.1;
-    spaceship.throttle = true;
-    let { score, level } = game;
-    stepCounter++;
+TF.prototype.someRandomGame = function () {
+  let { score, level } = this.game;
+  if (this.stepCounter < goalSteps && score > 0) {
+    this.spaceship.angle += Math.random() < 0.5 ? -0.1 : 0.1;
+    this.spaceship.throttle = true;
+    this.stepCounter++;
+  } else if (this.gameCounter < initialGames) {
+    this.reset();
+    this.gameCounter++;
+    this.stepCounter = 0;
+    this.game.level = 1;
   } else {
-    gameCounter++;
+    clearInterval();
   }
-
-  if (gameCounter === this.gamesPlayed) clearInterval();
 };
 
 TF.prototype.initialPopulation = function () {

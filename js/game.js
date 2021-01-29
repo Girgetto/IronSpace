@@ -1,8 +1,8 @@
 function Game() {
   this.level = 0;
-  this.score = 1000;
+  this.score = 100;
   this.planets = [];
-  this.goal = [200, 400];
+  this.goal = {};
   this.firstClick = false;
 }
 
@@ -58,15 +58,23 @@ Game.prototype.winFrame = function (ctx) {
   ctx.restore();
 };
 
-Game.prototype.start = function (e) {
+Game.prototype.start = function (e, spaceShip) {
   if (e === 13 && this.firstClick === false) {
     this.level++;
     this.firstClick = true;
+    this.setLevel(spaceShip);
   }
 };
 
 Game.prototype.setLevel = function (ctx) {
-  const levels = [null, level1, level2, level3, level4(ctx)];
+  const levels = [
+    null,
+    { goal: { posX: 200, posY: 400 }, planets: [] },
+    level1,
+    level2,
+    level3,
+    level4(ctx),
+  ];
 
   this.planets = levels[this.level].planets;
 

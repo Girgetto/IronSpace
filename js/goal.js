@@ -2,7 +2,7 @@
  * @param  {number} posX - position x of goal
  * @param  {number} posY - position y of goal
  */
-function Goal(posX, posY) {
+function Goal({ posX, posY }) {
   this.posX = posX;
   this.posY = posY;
   this.collision = false;
