@@ -1,6 +1,6 @@
 function Game() {
   this.level = 0;
-  this.score = 0;
+  this.score = 1000;
   this.planets = [];
   this.goal = [200, 400];
   this.firstClick = false;
@@ -22,13 +22,27 @@ Game.prototype.firstFrameDraw = function (ctx) {
   ctx.restore();
 };
 
+Game.prototype.drawGameOver = function (ctx) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.fillStyle = "#fff";
+  ctx.font = "80px invasion";
+  ctx.fillText("GAME OVER", ctx.canvas.width / 3 - 50, ctx.canvas.height / 2);
+  ctx.font = "50px invasion";
+  ctx.closePath();
+  ctx.restore();
+};
+
 Game.prototype.levelText = function (ctx) {
   if (this.level < 6) {
     ctx.save();
     ctx.beginPath();
     ctx.fillStyle = "#fff";
     ctx.font = "50px invasion";
-    ctx.fillText(`LEVEL${this.level}`, 50, 50);
+    ctx.fillText(`LEVEL ${this.level}`, 50, 50);
+    ctx.fillStyle = "#fff";
+    ctx.font = "50px invasion";
+    ctx.fillText(`SCORE ${this.score}`, ctx.canvas.width - 350, 50);
     ctx.closePath();
     ctx.restore();
   }
@@ -52,13 +66,7 @@ Game.prototype.start = function (e) {
 };
 
 Game.prototype.setLevel = function (ctx) {
-  const levels = [
-    null,
-    level1,
-    level2,
-    level3,
-    level4(ctx),
-  ];
+  const levels = [null, level1, level2, level3, level4(ctx)];
 
   this.planets = levels[this.level].planets;
 

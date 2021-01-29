@@ -1,36 +1,35 @@
 $(document).ready(() => {
   const game = new Game();
-  const newSpaceShip = new SpaceShip();
+  const spaceShip = new SpaceShip();
   let newPlanets = game.planets.map((planet) => new Planets(planet));
   let newGoal = new Goal(game.goal[0], game.goal[1]);
-  let isOver = false;
 
   $(document).keypress((e) => {
-    newSpaceShip.setListeners(e.which);
+    spaceShip.setListeners(e.which);
     game.start(e.which);
   });
 
   function draw(planetsToDraw) {
-    newSpaceShip.draw();
-    newGoal.draw(newSpaceShip.ctx);
+    spaceShip.draw();
+    newGoal.draw(spaceShip.ctx);
     planetsToDraw.forEach((planet) => {
-      planet.draw(newSpaceShip.ctx);
+      planet.draw(spaceShip.ctx);
     });
   }
 
   function reset() {
-    newSpaceShip.posX = 50;
-    newSpaceShip.posY = newSpaceShip.canvas.height / 2;
-    newSpaceShip.angle = 0;
-    newSpaceShip.speed = 0;
-    newSpaceShip.dx = 0;
-    newSpaceShip.dy = 0;
+    spaceShip.posX = 50;
+    spaceShip.posY = spaceShip.canvas.height / 2;
+    spaceShip.angle = 0;
+    spaceShip.speed = 0;
+    spaceShip.dx = 0;
+    spaceShip.dy = 0;
     newGoal.collision = false;
   }
 
   function checkCollisionsWithGoal() {
     if (newGoal.collision) {
-      game.setLevel(newSpaceShip);
+      game.setLevel(spaceShip);
       newGoal = new Goal(game.goal[0], game.goal[1]);
 
       newPlanets = game.planets.map((planet) => new Planets(planet));
@@ -38,46 +37,48 @@ $(document).ready(() => {
     }
   }
 
-  function update() {
-    newPlanets.forEach((planet) => newSpaceShip.collision(planet));
-    newSpaceShip.update();
-    isOver = newGoal.update(newSpaceShip);
-    newPlanets.forEach((planet) => {
-      planet.collision(newSpaceShip);
-    });
-    checkCollisionsWithGoal();
-  }
-
-  function clearSpaceShip() {
-    newSpaceShip.ctx.clearRect(
+  function clearCanvas() {
+    spaceShip.ctx.clearRect(
       0,
       0,
-      newSpaceShip.canvas.width,
-      newSpaceShip.canvas.height
+      spaceShip.canvas.width,
+      spaceShip.canvas.height
     );
   }
 
-  function applyCommands(angle) {
-    newSpaceShip.angle = angle;
-    newSpaceShip.dx = Math.cos(angle);
-    newSpaceShip.dy = Math.sin(angle);
-    update();
-    if (isOver) return { isOver: true, reward: game.level };
-    return { isOver: false, reward: game.level };
+  function checkIfGameOver() {
+    return game.score <= 0;
+  }
+
+  function update() {
+    newPlanets.forEach((planet) => spaceShip.collision(planet));
+    spaceShip.update();
+    isOver = newGoal.update(spaceShip);
+    newPlanets.forEach((planet) => {
+      planet.collision(spaceShip);
+    });
+    checkCollisionsWithGoal();
+    game.score--;
+    if (checkIfGameOver()) {
+      clearInterval(interval);
+      game.drawGameOver(spaceShip.ctx);
+      clearCanvas();
+    }
+    tenserFlow.someRandomGame(spaceShip, clearInterval, game);
   }
 
   function startGame() {
     if (game.level !== 0 && game.level !== 6) {
       update();
       draw(newPlanets);
-      game.levelText(newSpaceShip.ctx);
+      game.levelText(spaceShip.ctx);
     } else if (game.level === 6) {
-      game.winFrame(newSpaceShip.ctx);
+      game.winFrame(spaceShip.ctx);
     } else {
-      clearSpaceShip();
-      game.firstFrameDraw(newSpaceShip.ctx);
+      clearCanvas();
+      game.firstFrameDraw(spaceShip.ctx);
     }
   }
-  //startTs(reset, startGame, applyCommands);
-  setInterval(startGame, 1000 / 30);
+  const tenserFlow = new TF();
+  const interval = setInterval(startGame, 1000 / 30);
 });
