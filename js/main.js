@@ -2,8 +2,8 @@ $(document).ready(() => {
   const spaceShip = new SpaceShip();
   const game = new Game(spaceShip.ctx);
   let interval = null;
-  let goal = null;
   let planets = null;
+  let goal = null;
 
   function draw() {
     spaceShip.draw();
@@ -37,6 +37,7 @@ $(document).ready(() => {
     if (goal.collision) {
       game.setLevel();
       game.level++;
+      game.score = 100;
       resetSpaceShip();
       goal = new Goal(game.goal);
       planets = game.planets.map((planet) => new Planets(planet));
@@ -59,7 +60,7 @@ $(document).ready(() => {
   function update() {
     planets.forEach((planet) => spaceShip.collision(planet));
     spaceShip.update();
-    isOver = goal.update(spaceShip);
+    goal.update(spaceShip);
     planets.forEach((planet) => {
       planet.collision(spaceShip);
     });
@@ -95,4 +96,5 @@ $(document).ready(() => {
   });
 
   const tenserFlow = new TF(spaceShip, clearInterval, game, resetGame);
+  //tenserFlow.neuralNetworkModel();
 });
