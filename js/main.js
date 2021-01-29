@@ -26,6 +26,7 @@ $(document).ready(() => {
   function resetGame() {
     resetSpaceShip();
     game.level = 0;
+    game.score = 100;
     game.setLevel();
     goal = new Goal(game.goal);
     planets = game.planets.map((planet) => new Planets(planet));
@@ -64,14 +65,26 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    //tenserFlow.someRandomGame();
+    tenserFlow.initialPopulation();
     if (checkIfGameOver()) {
-      resetGame();
-      clearCanvas();
-      game.drawGameOver();
-      clearInterval(interval);
+      game.level = 7;
+      game.firstClick = true;
     }
   }
+
+  function engine() {
+    if (game.level === 6) {
+      game.winFrame();
+    } else if (game.level === 7) {
+      clearInterval(interval);
+      clearCanvas();
+      game.drawGameOver();
+    } else {
+      update();
+      draw();
+    }
+  }
+  game.firstFrameDraw();
 
   $(document).keypress((e) => {
     if (e.which === 13 && game.firstClick) {
@@ -80,20 +93,6 @@ $(document).ready(() => {
       interval = game.start(e.which, engine);
     }
   });
-
-  function engine() {
-    update();
-    draw();
-  }
-
-  if (game.level !== 0) {
-    interval = game.start(e.which, engine);
-  } else if (game.level === 6) {
-    game.winFrame();
-  } else {
-    clearCanvas();
-    game.firstFrameDraw();
-  }
 
   const tenserFlow = new TF(spaceShip, clearInterval, game, resetGame);
 });

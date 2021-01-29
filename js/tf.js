@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
-const goalSteps = 500;
-const scoreRequirement = 1;
-const initialGames = 100;
+const goalSteps = 100;
+const scoreRequirement = 2;
+const initialGames = 5;
 
 function TF(spaceship, clearInterval, game, reset) {
   this.spaceship = spaceship;
@@ -14,11 +14,8 @@ function TF(spaceship, clearInterval, game, reset) {
 }
 
 TF.prototype.someRandomGame = function () {
-  let { score, level } = this.game;
   if (this.stepCounter < goalSteps && score > 0) {
-    this.spaceship.angle += this.moves[
-      Math.floor(Math.random() * (2 - 0))
-    ];
+    this.spaceship.angle += this.moves[Math.floor(Math.random() * (2 - 0))];
     this.spaceship.throttle = true;
     this.stepCounter++;
   } else if (this.gameCounter < initialGames) {
@@ -31,27 +28,29 @@ TF.prototype.someRandomGame = function () {
   }
 };
 
+let trainingData = [];
+let scores = [];
+let acceptedScores = [];
+let prevObservation = [];
+let score = 0;
+let gameMemory = [];
 TF.prototype.initialPopulation = function () {
-  let trainingData = [];
-  let scores = [];
-  let acceptedScores = [];
-  for (let i = 0; i < initialGames; i++) {
-    let score = 0;
-    let gameMemory = [];
-    let prevObservation = [];
-    startGame();
-    for (let index = 0; index < goalSteps; index++) {
-      angle += Math.random() < 0.5 ? -0.1 : 0.1;
-
-      let { isOver, reward } = applyCommands(angle);
-
-      if (prevObservation.length > 0) {
-        gameMemory.push([prevObservation, angle]);
-      }
-
-      prevObservation = [reward, angle];
-      score += reward;
+  if (this.stepCounter < goalSteps && this.game.score > 0) {
+    this.spaceship.angle += this.moves[Math.floor(Math.random() * (2 - 0))];
+    this.spaceship.throttle = true;
+    this.stepCounter++;
+    if (prevObservation.length > 0) {
+      gameMemory.push([prevObservation, this.spaceship.angle]);
     }
+
+    prevObservation = [this.game.score, this.game.angle];
+    score = this.game.level;
+  } else if (this.gameCounter < initialGames) {
+    this.reset();
+    this.gameCounter++;
+    this.stepCounter = 0;
+    this.game.level = 1;
+    let prevObservation = [];
     if (score >= scoreRequirement) {
       acceptedScores.push(score);
       gameMemory.forEach((data) => {
@@ -59,15 +58,16 @@ TF.prototype.initialPopulation = function () {
       });
       scores.push(score);
     }
+  } else {
+    console.log(
+      "Average accepted score " +
+        acceptedScores.reduce((a, b) => a + b, 0) / acceptedScores.length
+    );
+    console.log("Median accepted score " + median(acceptedScores));
+    console.log(acceptedScores.length);
+    console.log(trainingData);
+    clearInterval();
   }
-  trainingDataSave = trainingData;
-  console.log(
-    "Average accepted score " +
-      acceptedScores.reduce((a, b) => a + b, 0) / acceptedScores.length
-  );
-  console.log("Median accepted score " + median(acceptedScores));
-  console.log(acceptedScores.length);
-  return trainingData;
 };
 
 //initialPopulation();

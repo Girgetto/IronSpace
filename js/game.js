@@ -1,6 +1,6 @@
 function Game(ctx) {
   this.level = 0;
-  this.score = 100000;
+  this.score = 100;
   this.planets = [];
   this.goal = {};
   this.firstClick = true;
@@ -10,8 +10,8 @@ function Game(ctx) {
 Game.prototype.firstFrameDraw = function () {
   this.ctx.save();
   this.ctx.beginPath();
-  this.ctx.fillStyle = "#fff";
   this.ctx.font = "80px invasion";
+  this.ctx.fillStyle = "#fff";
   this.ctx.fillText(
     "IRONSPACE",
     this.ctx.canvas.width / 3 - 50,
