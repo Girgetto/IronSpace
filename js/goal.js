@@ -5,6 +5,8 @@
 function Goal({ posX, posY }) {
   this.posX = posX;
   this.posY = posY;
+  this.width = 100;
+  this.height = 100;
   this.collision = false;
   this.img = new Image();
   this.img.src = "img/descarga.png";
@@ -17,7 +19,7 @@ Goal.prototype.draw = function (ctx) {
   ctx.fillStyle = "#fff";
   ctx.font = "20px invasion";
   ctx.fillText("TARGET", this.posX - 15, this.posY - 10);
-  ctx.drawImage(this.img, this.posX, this.posY, 50, 50);
+  ctx.drawImage(this.img, this.posX, this.posY, this.width, this.height);
   ctx.closePath();
   ctx.restore();
 };
@@ -25,9 +27,9 @@ Goal.prototype.draw = function (ctx) {
 Goal.prototype.update = function (ship) {
   const checkCollisionWithShip = () =>
     this.posX <= ship.posX &&
-    ship.posX <= this.posX + 50 &&
+    ship.posX <= this.posX + this.width &&
     this.posY <= ship.posY &&
-    ship.posY <= this.posY + 50;
+    ship.posY <= this.posY + this.height;
 
   //this.audio.play();
   this.collision = checkCollisionWithShip();

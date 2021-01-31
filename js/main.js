@@ -66,7 +66,8 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    tenserFlow.initialPopulation();
+    //tenserFlow.initialPopulation();
+    tenserFlow.startTrainedModel();
     if (checkIfGameOver()) {
       game.level = 7;
       game.firstClick = true;
@@ -96,5 +97,4 @@ $(document).ready(() => {
   });
 
   const tenserFlow = new TF(spaceShip, clearInterval, game, resetGame);
-  //tenserFlow.neuralNetworkModel();
 });

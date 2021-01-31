@@ -80,7 +80,7 @@ Game.prototype.start = function (e, engine) {
 
 Game.prototype.setLevel = function () {
   const levels = [
-    { goal: { posX: 200, posY: 400 }, planets: [] },
+    { goal: { posX: 300, posY: 300 }, planets: [] },
     level1,
     level2,
     level3,
