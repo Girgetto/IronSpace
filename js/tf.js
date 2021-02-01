@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 const goalSteps = 100;
 const scoreRequirement = 5000;
-const initialGames = 5;
+const initialGames = 15;
 
 function TF(spaceship, clearInterval, game, reset, startGame) {
   this.spaceship = spaceship;
@@ -163,18 +163,18 @@ TF.prototype.startTrainedModel = function () {
         let prediction = this.linearModel.predict(
           tf.tensor2d(observations, [1, 7])
         );
-        
+
         const unNormPreds = prediction
-        .mul(labelMax.sub(labelMin))
-        .add(labelMin);
-        
+          .mul(labelMax.sub(labelMin))
+          .add(labelMin);
+
         // Un-normalize the data
         return unNormPreds.dataSync();
       });
 
       move = preds[0] < preds[1] ? 0.1 : -0.1;
 
-      this.spaceship.angle += move < 0 ? -0.1 : 0.1;
+      this.spaceship.angle += move;
       this.spaceship.throttle = true;
       this.stepCounter++;
       score += this.game.score;
