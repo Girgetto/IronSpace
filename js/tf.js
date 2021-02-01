@@ -150,29 +150,20 @@ TF.prototype.startTrainedModel = function () {
     tfvis.show.modelSummary({ name: "Model Summary" }, model);
     this.linearModel = model;
     if (this.stepCounter < goalSteps && this.game.score > 0) {
-      const preds = tf.tidy(() => {
-        const observations = [
-          this.game.goal.posX,
-          this.spaceship.posX,
-          this.game.goal.posY,
-          this.spaceship.posY,
-          this.spaceship.angle,
-          this.spaceship.dx,
-          this.spaceship.dy,
-        ];
-        let prediction = this.linearModel.predict(
-          tf.tensor2d(observations, [1, 7])
-        );
+      const observations = [
+        this.game.goal.posX,
+        this.spaceship.posX,
+        this.game.goal.posY,
+        this.spaceship.posY,
+        this.spaceship.angle,
+        this.spaceship.dx,
+        this.spaceship.dy,
+      ];
+      let prediction = this.linearModel.predict(
+        tf.tensor2d(observations, [1, 7])
+      );
 
-        const unNormPreds = prediction
-          .mul(labelMax.sub(labelMin))
-          .add(labelMin);
-
-        // Un-normalize the data
-        return unNormPreds.dataSync();
-      });
-
-      move = preds[0] < preds[1] ? 0.1 : -0.1;
+      move = prediction.dataSync()[0] < prediction.dataSync()[1] ? 0.1 : -0.1;
 
       this.spaceship.angle += move;
       this.spaceship.throttle = true;
