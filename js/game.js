@@ -5,6 +5,7 @@ function Game(ctx) {
   this.goal = {};
   this.firstClick = true;
   this.ctx = ctx;
+  this.isTrained = false;
 }
 
 Game.prototype.firstFrameDraw = function () {
@@ -71,7 +72,7 @@ Game.prototype.winFrame = function () {
   this.ctx.restore();
 };
 
-Game.prototype.start = function (e, engine) {
+Game.prototype.start = function (engine) {
   this.level++;
   this.firstClick = false;
   this.setLevel(this.ctx);

@@ -66,8 +66,9 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    //tenserFlow.initialPopulation();
-    tenserFlow.startTrainedModel();
+    !game.isTrained
+      ? tenserFlow.initialPopulation()
+      : tenserFlow.startTrainedModel();
     if (checkIfGameOver()) {
       game.level = 7;
       game.firstClick = true;
@@ -88,13 +89,23 @@ $(document).ready(() => {
   }
   game.firstFrameDraw();
 
+  function startGame() {
+    resetGame();
+    interval = game.start(engine);
+  }
+
   $(document).keypress((e) => {
     if (e.which === 13 && game.firstClick) {
       spaceShip.setListeners(e.which);
-      resetGame();
-      interval = game.start(e.which, engine);
+      startGame();
     }
   });
 
-  const tenserFlow = new TF(spaceShip, clearInterval, game, resetGame);
+  const tenserFlow = new TF(
+    spaceShip,
+    () => clearInterval(interval),
+    game,
+    resetGame,
+    startGame
+  );
 });

@@ -1,23 +1,24 @@
 /* eslint-disable no-unused-vars */
 const goalSteps = 100;
 const scoreRequirement = 5000;
-const initialGames = 50;
+const initialGames = 5;
 
-function TF(spaceship, clearInterval, game, reset, goal) {
+function TF(spaceship, clearInterval, game, reset, startGame) {
   this.spaceship = spaceship;
-  this.goal = goal;
   this.clearInterval = clearInterval;
   this.game = game;
   this.reset = reset;
   this.stepCounter = 0;
   this.gameCounter = 0;
   this.moves = [-0.1, 0.1];
-  this.linearModel = tf.sequential();
+  this.linearModel = null;
   this.trainingData = [];
+  this.startGame = startGame;
+  this.normalizationData = {};
 }
 
 TF.prototype.someRandomGame = function () {
-  if (this.stepCounter < goalSteps || score > 0 || this.game.level > 0) {
+  if (this.stepCounter < goalSteps || score > 0) {
     this.spaceship.angle += this.moves[Math.floor(Math.random() * (2 - 0))];
     this.spaceship.throttle = true;
     this.stepCounter++;
@@ -37,6 +38,7 @@ let prevObservation = [];
 let score = 0;
 let gameMemory = [];
 TF.prototype.initialPopulation = function () {
+  if (this.linearModel !== null) return;
   if (
     this.stepCounter < goalSteps &&
     this.game.score > 0 &&
@@ -77,8 +79,9 @@ TF.prototype.initialPopulation = function () {
     prevObservation = [];
     gameMemory = [];
   } else {
-    clearInterval();
-    this.neuralNetworkModel(this.trainingData);
+    this.clearInterval();
+    if (this.trainingData.length > 0)
+      return this.neuralNetworkModel(this.trainingData);
   }
 };
 
@@ -98,6 +101,8 @@ TF.prototype.neuralNetworkModel = function (trainingData) {
 
   const normalizedLabels = ys.sub(labelMin).div(labelMax.sub(labelMin));
 
+  this.linearModel = tf.sequential();
+
   this.linearModel.add(
     tf.layers.dense({ units: 2, inputShape: [inputs[0].length] })
   );
@@ -110,7 +115,7 @@ TF.prototype.neuralNetworkModel = function (trainingData) {
   const batchSize = 32;
   const epochs = 50;
 
-  return this.linearModel
+  this.linearModel
     .fit(xs, ys, {
       batchSize,
       epochs,
@@ -123,35 +128,52 @@ TF.prototype.neuralNetworkModel = function (trainingData) {
     .then((info) => {
       console.log("Final accuracy", info.history);
       this.linearModel.save("localstorage://my-model").then(() => {
+        this.normalizationData = {
+          normalizedInputs,
+          normalizedLabels,
+          inputMax,
+          inputMin,
+          labelMax,
+          labelMin,
+        };
+        this.game.isTrained = true;
+        this.stepCounter = 0;
+        this.gameCounter = 0;
         console.log("saved");
       });
     });
 };
 
 TF.prototype.startTrainedModel = function () {
+  const { inputMax, inputMin, labelMin, labelMax } = this.normalizationData;
   tf.loadLayersModel("localstorage://my-model").then((model) => {
     tfvis.show.modelSummary({ name: "Model Summary" }, model);
     this.linearModel = model;
     if (this.stepCounter < goalSteps && this.game.score > 0) {
-      if (prevObservation.length === 0) {
-        move = this.moves[Math.floor(Math.random() * (2 - 0))];
-      } else {
+      const preds = tf.tidy(() => {
+        const observations = [
+          this.game.goal.posX,
+          this.spaceship.posX,
+          this.game.goal.posY,
+          this.spaceship.posY,
+          this.spaceship.angle,
+          this.spaceship.dx,
+          this.spaceship.dy,
+        ];
         let prediction = this.linearModel.predict(
-          tf.tensor2d(
-            [
-              this.game.goal.posX,
-              this.spaceship.posX,
-              this.game.goal.posY,
-              this.spaceship.posY,
-              this.spaceship.angle,
-              this.spaceship.dx,
-              this.spaceship.dy,
-            ],
-            [1, 7]
-          )
+          tf.tensor2d(observations, [1, 7])
         );
-        move = prediction.dataSync()[0] < prediction.dataSync()[1] ? 0.1 : -0.1;
-      }
+        
+        const unNormPreds = prediction
+        .mul(labelMax.sub(labelMin))
+        .add(labelMin);
+        
+        // Un-normalize the data
+        return unNormPreds.dataSync();
+      });
+
+      move = preds[0] < preds[1] ? 0.1 : -0.1;
+
       this.spaceship.angle += move < 0 ? -0.1 : 0.1;
       this.spaceship.throttle = true;
       this.stepCounter++;
