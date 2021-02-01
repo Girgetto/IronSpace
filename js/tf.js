@@ -46,23 +46,7 @@ TF.prototype.initialPopulation = function () {
     this.spaceship.angle += move;
     this.spaceship.throttle = true;
     this.stepCounter++;
-
-    if (prevObservation.length > 0) {
-      gameMemory.push([
-        [
-          this.game.goal.posX,
-          this.spaceship.posX,
-          this.game.goal.posY,
-          this.spaceship.posY,
-          this.spaceship.angle,
-          this.spaceship.dx,
-          this.spaceship.dy,
-        ],
-        move === 0.1 ? [0, 1] : [1, 0],
-      ]);
-    }
-
-    prevObservation = [
+    let observations = [
       this.game.goal.posX,
       this.spaceship.posX,
       this.game.goal.posY,
@@ -71,6 +55,12 @@ TF.prototype.initialPopulation = function () {
       this.spaceship.dx,
       this.spaceship.dy,
     ];
+
+    if (prevObservation.length > 0) {
+      gameMemory.push([observations, move === 0.1 ? [0, 1] : [1, 0]]);
+    }
+
+    prevObservation = observations;
 
     score += this.game.score;
   } else if (this.gameCounter < initialGames) {
@@ -165,32 +155,13 @@ TF.prototype.startTrainedModel = function () {
       this.spaceship.angle += move < 0 ? -0.1 : 0.1;
       this.spaceship.throttle = true;
       this.stepCounter++;
-      prevObservation = [
-        Math.abs(this.game.goal.posX - this.spaceship.posX),
-        Math.abs(this.game.goal.posY - this.spaceship.posY),
-      ]; // [dPosX, dPosY]
-      gameMemory.push([
-        prevObservation[0] >
-          Math.abs(this.game.goal.posX - this.spaceship.posX) &&
-        prevObservation[1] > Math.abs(this.game.goal.posY - this.spaceship.posY)
-          ? -move
-          : move,
-        move,
-      ]); // [better move, move took]
       score += this.game.score;
     } else if (this.gameCounter < initialGames) {
-      if (score >= scoreRequirement) {
-        acceptedScores.push(score);
-        this.trainingData = gameMemory;
-        scores.push(score);
-      }
       this.reset();
       this.gameCounter++;
       this.stepCounter = 0;
       this.game.level = 1;
       score = 0;
-      prevObservation = [];
-      gameMemory = [];
     } else {
       clearInterval();
     }
