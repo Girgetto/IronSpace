@@ -1,7 +1,0 @@
-{
-  "modelTopology": {"class_name":"Sequential","config":{"name":"sequential_1","layers":[{"class_name":"Dense","config":{"units":2,"activation":"linear","use_bias":true,"kernel_initializer":{"class_name":"VarianceScaling","config":{"scale":1,"mode":"fan_avg","distribution":"normal","seed":null}},"bias_initializer":{"class_name":"Zeros","config":{}},"kernel_regularizer":null,"bias_regularizer":null,"activity_regularizer":null,"kernel_constraint":null,"bias_constraint":null,"name":"dense_Dense1","trainable":true,"batch_input_shape":[null,7],"dtype":"float32"}}]},"keras_version":"tfjs-layers 2.0.0","backend":"tensor_flow.js"},
-  "weightData": "v/jovuaLeT+cZZA+al5BPnpHcT47wY6+2yOJPO2hLL99XbW+Jus1P5QYFr9hfyc+azUBv3ABgz0jEm897I8hPg==",
-  "info": {"dateSaved":"2021-02-01T12:26:49.993Z","modelTopologyType":"JSON","modelTopologyBytes":610,"weightSpecsBytes":123,"weightDataBytes":64},
-  "weightSpaces": [{"name":"dense_Dense1/kernel","shape":[7,2],"dtype":"float32"},{"name":"dense_Dense1/bias","shape":[2],"dtype":"float32"}],
-  "modelMetadata": {"format":"layers-model","generatedBy":"TensorFlow.js tfjs-layers v2.0.0","convertedBy":null}
-}

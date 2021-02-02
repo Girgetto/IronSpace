@@ -1,96 +1,63 @@
-function Game(ctx) {
-  this.level = 0;
-  this.score = 100;
+function Game() {
+  this.frame = 0;
   this.planets = [];
-  this.goal = {};
-  this.firstClick = true;
-  this.ctx = ctx;
-  this.isTrained = false;
+  this.goal = [900, 500];
+  this.firstClick = false;
 }
 
-Game.prototype.firstFrameDraw = function () {
-  this.ctx.save();
-  this.ctx.beginPath();
-  this.ctx.font = "80px invasion";
-  this.ctx.fillStyle = "#fff";
-  this.ctx.fillText(
-    "IRONSPACE",
-    this.ctx.canvas.width / 3 - 50,
-    this.ctx.canvas.height / 2
-  );
-  this.ctx.font = "50px invasion";
-  this.ctx.fillText(
+Game.prototype.firstFrameDraw = function(ctx) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.fillStyle = "#fff";
+  ctx.font = "80px invasion";
+  ctx.fillText("IRONSPACE", ctx.canvas.width / 3 - 50, ctx.canvas.height / 2);
+  ctx.font = "50px invasion";
+  ctx.fillText(
     "PRESS ENTER TO START",
-    this.ctx.canvas.width / 4,
-    this.ctx.canvas.height / 2 + 70
+    ctx.canvas.width / 4,
+    ctx.canvas.height / 2 + 70
   );
-  this.ctx.closePath();
-  this.ctx.restore();
+  ctx.closePath();
+  ctx.restore();
 };
 
-Game.prototype.drawGameOver = function () {
-  this.ctx.save();
-  this.ctx.beginPath();
-  this.ctx.fillStyle = "#fff";
-  this.ctx.font = "80px invasion";
-  this.ctx.fillText(
-    "GAME OVER",
-    this.ctx.canvas.width / 3 - 50,
-    this.ctx.canvas.height / 2
-  );
-  this.ctx.font = "50px invasion";
-  this.ctx.closePath();
-  this.ctx.restore();
-};
-
-Game.prototype.levelText = function () {
-  if (this.level < 6) {
-    this.ctx.save();
-    this.ctx.beginPath();
-    this.ctx.fillStyle = "#fff";
-    this.ctx.font = "50px invasion";
-    this.ctx.fillText(`LEVEL ${this.level}`, 50, 50);
-    this.ctx.fillStyle = "#fff";
-    this.ctx.font = "50px invasion";
-    this.ctx.fillText(`SCORE ${this.score}`, this.ctx.canvas.width - 350, 50);
-    this.ctx.closePath();
-    this.ctx.restore();
+Game.prototype.levelText = function(ctx) {
+  if (this.frame < 6) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.fillStyle = "#fff";
+    ctx.font = "50px invasion";
+    ctx.fillText(`LEVEL${this.frame}`, 50, 50);
+    ctx.closePath();
+    ctx.restore();
   }
 };
 
-Game.prototype.winFrame = function () {
-  this.ctx.save();
-  this.ctx.beginPath();
-  this.ctx.fillStyle = "#fff";
-  this.ctx.font = "80px invasion";
-  this.ctx.fillText(
-    "YOU WIN!",
-    this.ctx.canvas.width / 3,
-    this.ctx.canvas.height / 2
-  );
-  this.ctx.closePath();
-  this.ctx.restore();
+Game.prototype.winFrame = function(ctx) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.fillStyle = "#fff";
+  ctx.font = "80px invasion";
+  ctx.fillText("YOU WIN!", ctx.canvas.width / 3, ctx.canvas.height / 2);
+  ctx.closePath();
+  ctx.restore();
 };
 
-Game.prototype.start = function (engine) {
-  this.level++;
-  this.firstClick = false;
-  this.setLevel(this.ctx);
-  return setInterval(engine, 1000 / 30);
+Game.prototype.start = function(e) {
+  if (e === 13 && this.firstClick === false) {
+    this.frame++;
+    this.firstClick = true;
+  }
 };
 
-Game.prototype.setLevel = function () {
-  const levels = [
-    { goal: { posX: 300, posY: 300 }, planets: [] },
-    level1,
-    level2,
-    level3,
-    level4(this.ctx),
-  ];
+Game.prototype.level = function(ctx) {
+  var levels = [null, level1, level2, level3, level4(ctx)];
 
-  this.planets = levels[this.level].planets;
+  this.planets = levels[this.frame];
 
-  this.goal = levels[this.level].goal;
+  this.goal = this.planets && this.planets.goal;
+
+  this.frame++;
 
   return true;
 };

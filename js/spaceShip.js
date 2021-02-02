@@ -3,7 +3,11 @@ const map = {};
 const A_KEY = 65;
 const D_KEY = 68;
 const W_KEY = 87;
-const spaceShipColor = "#FFF";
+var alias = {
+  D_KEY: 68,
+  W_KEY: 87,
+  A_KEY: 65,
+};
 
 function SpaceShip() {
   this.canvas = document.getElementById("myCanvas");
@@ -19,14 +23,14 @@ function SpaceShip() {
   this.dx = 0;
   this.dy = 0;
   this.dAngle = 0;
-  //this.audio = new Audio("audio/rocket.mp3");
+  this.audio = new Audio("audio/Rocket.mp3");
   this.tutorial = true;
   this.throttle = false;
   this.isTurningRight = false;
   this.isTurningLeft = false;
   this.maxSpeed = 5;
   this.gravityFormula = (planet) =>
-    (G_CONSTANT * planet.mass) / Math.pow(distance, 2);
+    (G_CONSTANT * planet.mass) / distance ** 2;
 }
 
 SpaceShip.prototype.collision = function (planet) {
@@ -59,8 +63,8 @@ SpaceShip.prototype.draw = function () {
   this.ctx.save();
   this.ctx.translate(this.posX, this.posY);
   this.ctx.rotate(this.angle);
-  this.ctx.fillStyle = spaceShipColor;
-  this.ctx.strokeStyle = spaceShipColor;
+  this.ctx.fillStyle = "#073763";
+  this.ctx.strokeStyle = "#FFF";
   this.ctx.beginPath();
   this.ctx.moveTo(this.v[0][0], this.v[0][1]);
   this.ctx.lineTo(this.v[1][0], this.v[1][1]);
@@ -68,7 +72,7 @@ SpaceShip.prototype.draw = function () {
   if (this.tutorial) {
     this.ctx.save();
     this.ctx.font = "20px invasion";
-    this.ctx.fillStyle = spaceShipColor;
+    this.ctx.fillStyle = "#fff";
     this.ctx.fillText("W Forward", this.v[0][0] + 30, this.v[0][1] + 10);
     this.ctx.fillText("A Turn", this.v[0][0], this.v[0][1] - 10);
     this.ctx.fillText("D Turn", this.v[0][0], this.v[0][1] + 30);
@@ -104,7 +108,8 @@ SpaceShip.prototype.setListeners = function () {
 SpaceShip.prototype.move = function () {
   if (map[W_KEY]) {
     this.tutorial = false;
-    this.throttle = true;
+    this.dx += Math.cos(this.angle) * 10;
+    this.dy += Math.sin(this.angle) * 10;
   } else {
     this.dx *= 0.99;
     this.dy *= 0.99;
@@ -116,11 +121,6 @@ SpaceShip.prototype.move = function () {
 
   if (map[D_KEY]) {
     this.angle += 0.1;
-  }
-
-  if (this.throttle) {
-    this.dx += Math.cos(this.angle) * 10;
-    this.dy += Math.sin(this.angle) * 10;
   }
 
   let speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
