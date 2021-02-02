@@ -66,7 +66,7 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    game.isTrained
+    !game.isTrained
       ? tenserFlow.initialPopulation()
       : tenserFlow.startTrainedModel();
     if (checkIfGameOver()) {

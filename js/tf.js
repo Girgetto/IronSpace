@@ -1,7 +1,13 @@
 /* eslint-disable no-unused-vars */
 const goalSteps = 100;
 const scoreRequirement = 5000;
-const initialGames = 15;
+const initialGames = 10;
+
+let scores = [];
+let acceptedScores = [];
+let prevObservation = [];
+let score = 0;
+let gameMemory = [];
 
 function TF(spaceship, clearInterval, game, reset, startGame) {
   this.spaceship = spaceship;
@@ -17,26 +23,6 @@ function TF(spaceship, clearInterval, game, reset, startGame) {
   this.normalizationData = {};
 }
 
-TF.prototype.someRandomGame = function () {
-  if (this.stepCounter < goalSteps || score > 0) {
-    this.spaceship.angle += this.moves[Math.floor(Math.random() * (2 - 0))];
-    this.spaceship.throttle = true;
-    this.stepCounter++;
-  } else if (this.gameCounter < initialGames) {
-    this.reset();
-    this.gameCounter++;
-    this.stepCounter = 0;
-    this.game.level = 1;
-  } else {
-    clearInterval();
-  }
-};
-
-let scores = [];
-let acceptedScores = [];
-let prevObservation = [];
-let score = 0;
-let gameMemory = [];
 TF.prototype.initialPopulation = function () {
   if (this.linearModel !== null) return;
   if (
@@ -49,13 +35,13 @@ TF.prototype.initialPopulation = function () {
     this.spaceship.throttle = true;
     this.stepCounter++;
     let observations = [
-      this.game.goal.posX,
-      this.spaceship.posX,
-      this.game.goal.posY,
-      this.spaceship.posY,
-      this.spaceship.angle,
-      this.spaceship.dx,
-      this.spaceship.dy,
+      this.spaceship.posX / 100,
+      this.spaceship.posY / 100,
+      this.game.goal.posY / 100,
+      this.game.goal.posY / 100,
+      this.spaceship.dx / 100,
+      this.spaceship.dy / 100,
+      this.spaceship.angle / 100,
     ];
 
     if (prevObservation.length > 0) {
@@ -92,24 +78,18 @@ TF.prototype.neuralNetworkModel = function (trainingData) {
   const xs = tf.tensor2d(inputs, [inputs.length, 7]);
   const ys = tf.tensor2d(labels, [labels.length, 2]);
 
-  const inputMax = xs.max();
-  const inputMin = xs.min();
-  const labelMax = ys.max();
-  const labelMin = ys.min();
-
-  const normalizedInputs = xs.sub(inputMin).div(inputMax.sub(inputMin));
-
-  const normalizedLabels = ys.sub(labelMin).div(labelMax.sub(labelMin));
-
   this.linearModel = tf.sequential();
 
   this.linearModel.add(
-    tf.layers.dense({ units: 2, inputShape: [inputs[0].length] })
+    tf.layers.dense({
+      units: 2,
+      inputShape: [inputs[0].length],
+    })
   );
+
   this.linearModel.compile({
-    loss: tf.losses.meanSquaredError,
+    loss: "categoricalCrossentropy",
     optimizer: tf.train.adam(),
-    metrics: ["mse"],
   });
 
   const batchSize = 32;
@@ -121,21 +101,13 @@ TF.prototype.neuralNetworkModel = function (trainingData) {
       epochs,
       callbacks: tfvis.show.fitCallbacks(
         { name: "Training Performance" },
-        ["loss", "mse", "acc"],
+        ["loss", "mse"],
         { height: 200, callbacks: ["onEpochEnd"] }
       ),
     })
     .then((info) => {
       console.log("Final accuracy", info.history);
       this.linearModel.save("localstorage://my-model").then(() => {
-        this.normalizationData = {
-          normalizedInputs,
-          normalizedLabels,
-          inputMax,
-          inputMin,
-          labelMax,
-          labelMin,
-        };
         this.game.isTrained = true;
         this.stepCounter = 0;
         this.gameCounter = 0;
@@ -150,18 +122,21 @@ TF.prototype.startTrainedModel = function () {
     tfvis.show.modelSummary({ name: "Model Summary" }, model);
     this.linearModel = model;
     if (this.stepCounter < goalSteps && this.game.score > 0) {
-      const observations = [
-        this.game.goal.posX,
-        this.spaceship.posX,
-        this.game.goal.posY,
-        this.spaceship.posY,
-        this.spaceship.angle,
-        this.spaceship.dx,
-        this.spaceship.dy,
+      let observations = [
+        this.spaceship.posX / 100,
+        this.spaceship.posY / 100,
+        this.game.goal.posY / 100,
+        this.game.goal.posY / 100,
+        this.spaceship.dx / 100,
+        this.spaceship.dy / 100,
+        this.spaceship.angle / 100,
       ];
+
       let prediction = this.linearModel.predict(
         tf.tensor2d(observations, [1, 7])
       );
+
+      console.log(prediction.dataSync());
 
       move = prediction.dataSync()[0] < prediction.dataSync()[1] ? 0.1 : -0.1;
 
