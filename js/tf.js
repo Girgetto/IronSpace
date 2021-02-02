@@ -35,27 +35,21 @@ TF.prototype.initialPopulation = function () {
     this.spaceship.throttle = true;
     this.stepCounter++;
     let observations = [
-      this.spaceship.posX / 100,
-      this.spaceship.posY / 100,
-      this.game.goal.posY / 100,
-      this.game.goal.posY / 100,
-      this.spaceship.dx / 100,
-      this.spaceship.dy / 100,
-      this.spaceship.angle / 100,
+      parseInt(this.spaceship.posX) / 100,
+      parseInt(this.spaceship.posY) / 100,
+      parseInt(this.game.goal.posY) / 100,
+      parseInt(this.game.goal.posY) / 100,
+      parseInt(this.spaceship.dx) / 100,
+      parseInt(this.spaceship.dy) / 100,
+      parseInt(this.spaceship.angle) / 100,
     ];
 
-    if (prevObservation.length > 0) {
-      gameMemory.push([observations, move === 0.1 ? [0, 1] : [1, 0]]);
-    }
-
-    prevObservation = observations;
+    gameMemory.push([observations, move === 0.1 ? [0, 1] : [1, 0]]);
 
     score += this.game.score;
   } else if (this.gameCounter < initialGames) {
     if (score >= scoreRequirement) {
-      acceptedScores.push(score);
-      this.trainingData = gameMemory;
-      scores.push(score);
+      this.trainingData = [...this.trainingData, ...gameMemory];
     }
     this.reset();
     this.gameCounter++;
@@ -66,24 +60,28 @@ TF.prototype.initialPopulation = function () {
     gameMemory = [];
   } else {
     this.clearInterval();
-    if (this.trainingData.length > 0)
-      return this.neuralNetworkModel(this.trainingData);
+    if (this.trainingData.length > 0) this.neuralNetworkModel();
   }
 };
 
-TF.prototype.neuralNetworkModel = function (trainingData) {
-  const inputs = trainingData.map((data) => data[0].map((e) => e));
-  const labels = trainingData.map((data) => data[1]);
-
-  const xs = tf.tensor2d(inputs, [inputs.length, 7]);
-  const ys = tf.tensor2d(labels, [labels.length, 2]);
+TF.prototype.neuralNetworkModel = function () {
+  const inputs = this.trainingData.map((data) => data[0].map((e) => e));
+  const labels = this.trainingData.map((data) => data[1]);
 
   this.linearModel = tf.sequential();
 
   this.linearModel.add(
     tf.layers.dense({
-      units: 2,
+      units: inputs[0].length,
       inputShape: [inputs[0].length],
+      activation: "relu",
+    })
+  );
+
+  this.linearModel.add(
+    tf.layers.dense({
+      units: labels[0].length,
+      activation: "softmax",
     })
   );
 
@@ -92,8 +90,10 @@ TF.prototype.neuralNetworkModel = function (trainingData) {
     optimizer: tf.train.adam(),
   });
 
+  const xs = tf.tensor2d(inputs, [inputs.length, inputs[0].length]);
+  const ys = tf.tensor2d(labels, [labels.length, labels[0].length]);
   const batchSize = 32;
-  const epochs = 50;
+  const epochs = 10;
 
   this.linearModel
     .fit(xs, ys, {
@@ -123,18 +123,20 @@ TF.prototype.startTrainedModel = function () {
     this.linearModel = model;
     if (this.stepCounter < goalSteps && this.game.score > 0) {
       let observations = [
-        this.spaceship.posX / 100,
-        this.spaceship.posY / 100,
-        this.game.goal.posY / 100,
-        this.game.goal.posY / 100,
-        this.spaceship.dx / 100,
-        this.spaceship.dy / 100,
-        this.spaceship.angle / 100,
+        parseInt(this.spaceship.posX) / 100,
+        parseInt(this.spaceship.posY) / 100,
+        parseInt(this.game.goal.posY) / 100,
+        parseInt(this.game.goal.posY) / 100,
+        parseInt(this.spaceship.dx) / 100,
+        parseInt(this.spaceship.dy) / 100,
+        parseInt(this.spaceship.angle) / 100,
       ];
 
-      let prediction = this.linearModel.predict(
-        tf.tensor2d(observations, [1, 7])
-      );
+      let prediction = tf.tidy(() => {
+        return this.linearModel.predict(
+          tf.tensor2d(observations, [1, observations.length])
+        );
+      });
 
       console.log(prediction.dataSync());
 
