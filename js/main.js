@@ -1,111 +1,72 @@
 $(document).ready(() => {
-  const spaceShip = new SpaceShip();
-  const game = new Game(spaceShip.ctx);
-  let interval = null;
-  let planets = null;
-  let goal = null;
+  const game = new Game();
+  const newSpaceShip = new SpaceShip();
+  let newPlanets = game.planets.map(
+    planet => new Planets(planet[0], planet[1], planet[2], planet[3])
+  );
+  let newGoal = new Goal(game.goal[0], game.goal[1]);
+  
+  $(document).keypress(e => {
+    newSpaceShip.setListeners(e.which);
+    game.start(e.which);
+  });
 
-  function draw() {
-    spaceShip.draw();
-    goal.draw(spaceShip.ctx);
-    game.levelText(spaceShip.ctx);
-    planets.forEach((planet) => {
-      planet.draw(spaceShip.ctx);
+  function draw(planetsToDraw) {
+    newSpaceShip.draw();
+    newGoal.draw(newSpaceShip.ctx);
+    planetsToDraw.forEach(planet => {
+      planet.draw(newSpaceShip.ctx);
     });
   }
 
-  function resetSpaceShip() {
-    spaceShip.posX = 50;
-    spaceShip.posY = spaceShip.canvas.height / 2;
-    spaceShip.angle = 0;
-    spaceShip.speed = 0;
-    spaceShip.dx = 0;
-    spaceShip.dy = 0;
-  }
+  function checkPlanetCollision() {
+    if (newGoal.collision) {
+      game.level(newSpaceShip);
+      newGoal = new Goal(game.goal[0], game.goal[1]);
 
-  function resetGame() {
-    resetSpaceShip();
-    game.level = 0;
-    game.score = 100;
-    game.setLevel();
-    goal = new Goal(game.goal);
-    planets = game.planets.map((planet) => new Planets(planet));
-    game.firstClick = true;
-  }
-
-  function checkCollisionsWithGoal() {
-    if (goal.collision) {
-      game.setLevel();
-      game.level++;
-      game.score = 100;
-      resetSpaceShip();
-      goal = new Goal(game.goal);
-      planets = game.planets.map((planet) => new Planets(planet));
+      newPlanets = game.planets.planets.map(
+        planet => new Planets(planet[0], planet[1], planet[2], planet[3])
+      );
+      newSpaceShip.posX = 50;
+      newSpaceShip.posY = newSpaceShip.canvas.height / 2;
+      newSpaceShip.angle = 0;
+      newSpaceShip.speed = 0;
+      newSpaceShip.dx = 0;
+      newSpaceShip.dy = 0;
+      newGoal.collision = false;
     }
-  }
-
-  function clearCanvas() {
-    spaceShip.ctx.clearRect(
-      0,
-      0,
-      spaceShip.canvas.width,
-      spaceShip.canvas.height
-    );
-  }
-
-  function checkIfGameOver() {
-    return game.score <= 0;
   }
 
   function update() {
-    planets.forEach((planet) => spaceShip.collision(planet));
-    spaceShip.update();
-    goal.update(spaceShip);
-    planets.forEach((planet) => {
-      planet.collision(spaceShip);
+    newPlanets.forEach(planet => newSpaceShip.collision(planet));
+    newSpaceShip.update();
+    newGoal.update(newSpaceShip);
+    newPlanets.forEach(planet => {
+      planet.collision(newSpaceShip);
     });
-    checkCollisionsWithGoal();
-    game.score--;
-    !game.isTrained
-      ? tenserFlow.initialPopulation()
-      : tenserFlow.startTrainedModel();
-    if (checkIfGameOver()) {
-      game.level = 7;
-      game.firstClick = true;
-    }
+    checkPlanetCollision();
   }
 
-  function engine() {
-    if (game.level === 6) {
-      game.winFrame();
-    } else if (game.level === 7) {
-      clearInterval(interval);
-      clearCanvas();
-      game.drawGameOver();
-    } else {
-      update();
-      draw();
-    }
+  function clearSpaceShip() {
+    newSpaceShip.ctx.clearRect(
+      0,
+      0,
+      newSpaceShip.canvas.width,
+      newSpaceShip.canvas.height
+    );
   }
-  game.firstFrameDraw();
 
   function startGame() {
-    resetGame();
-    interval = game.start(engine);
-  }
-
-  $(document).keypress((e) => {
-    if (e.which === 13 && game.firstClick) {
-      spaceShip.setListeners(e.which);
-      startGame();
+    if (game.frame !== 0 && game.frame !== 6) {
+      update();
+      draw(newPlanets);
+      game.levelText(newSpaceShip.ctx);
+    } else if (game.frame === 6) {
+      game.winFrame(newSpaceShip.ctx);
+    } else {
+      clearSpaceShip();
+      game.firstFrameDraw(newSpaceShip.ctx);
     }
-  });
-
-  const tenserFlow = new TF(
-    spaceShip,
-    () => clearInterval(interval),
-    game,
-    resetGame,
-    startGame
-  );
+  }
+  setInterval(startGame, 1000/30);
 });
