@@ -1,0 +1,12 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2015,
+    "sourceType": "module"
+  },
+  "rules": {
+    "semi": "error",
+    "quotes": "error",
+    "no-console": "warn",
+    "no-unused-vars": "error"
+  }
+}
