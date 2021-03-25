@@ -4,6 +4,7 @@ $(document).ready(() => {
   let interval = null;
   let planets = null;
   let goal = null;
+  let SCORE = 1000;
 
   function draw() {
     spaceShip.draw();
@@ -26,7 +27,7 @@ $(document).ready(() => {
   function resetGame() {
     resetSpaceShip();
     game.level = 0;
-    game.score = 100;
+    game.score = SCORE;
     game.setLevel();
     goal = new Goal(game.goal);
     planets = game.planets.map((planet) => new Planets(planet));
@@ -37,7 +38,7 @@ $(document).ready(() => {
     if (goal.collision) {
       game.setLevel();
       game.level++;
-      game.score = 100;
+      game.score = SCORE;
       resetSpaceShip();
       goal = new Goal(game.goal);
       planets = game.planets.map((planet) => new Planets(planet));
@@ -66,9 +67,9 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    !game.isTrained
-      ? tenserFlow.initialPopulation()
-      : tenserFlow.startTrainedModel();
+    // !game.isTrained
+    //   ? tenserFlow.initialPopulation()
+    //   : tenserFlow.startTrainedModel();
     if (checkIfGameOver()) {
       game.level = 7;
       game.firstClick = true;
