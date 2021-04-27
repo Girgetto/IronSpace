@@ -71,12 +71,9 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-<<<<<<< HEAD
-=======
     // !game.isTrained
     //   ? tenserFlow.initialPopulation()
     //   : tenserFlow.startTrainedModel();
->>>>>>> 8389e944fe0b24891fae62b51fb6f6aa9783bc5d
     if (checkIfGameOver()) {
       game.level = 7;
       game.firstClick = true;
