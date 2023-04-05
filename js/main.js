@@ -71,17 +71,14 @@ $(document).ready(() => {
     });
     checkCollisionsWithGoal();
     game.score--;
-    // !game.isTrained
-    //   ? tenserFlow.initialPopulation()
-    //   : tenserFlow.startTrainedModel();
+
     if (checkIfGameOver()) {
       game.level = 7;
       game.firstClick = true;
     }
-    if(isMLOn) {
-      !game.isTrained
-      ? tenserFlow.initialPopulation()
-      : tenserFlow.startTrainedModel();
+
+    if (isMLOn) {
+      tenserFlow.train();
     }
   }
 
@@ -97,6 +94,7 @@ $(document).ready(() => {
       draw();
     }
   }
+
   game.firstFrameDraw();
 
   function startGame() {

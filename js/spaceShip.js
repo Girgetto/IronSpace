@@ -25,6 +25,7 @@ function SpaceShip() {
   this.isTurningRight = false;
   this.isTurningLeft = false;
   this.maxSpeed = 5;
+  this.speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
   this.gravityFormula = (planet) =>
     (G_CONSTANT * planet.mass) / Math.pow(distance, 2);
 }
@@ -33,14 +34,17 @@ SpaceShip.prototype.collision = function (planet) {
   diffX = planet.posX - this.posX;
   diffY = planet.posY - this.posY;
   distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+
   if (planet.posX > this.posX || planet.posY > this.posY) {
     this.dx += this.gravityFormula(planet);
     this.dy += this.gravityFormula(planet);
   }
+
   if (planet.posX < this.posX || planet.posY < this.posY) {
     this.dx -= this.gravityFormula(planet);
     this.dy -= this.gravityFormula(planet);
   }
+
   if (distance < planet.radius) {
     this.dx = 0;
     this.dy = 0;
@@ -65,6 +69,7 @@ SpaceShip.prototype.draw = function () {
   this.ctx.moveTo(this.v[0][0], this.v[0][1]);
   this.ctx.lineTo(this.v[1][0], this.v[1][1]);
   this.ctx.lineTo(this.v[2][0], this.v[2][1]);
+
   if (this.tutorial) {
     this.ctx.save();
     this.ctx.font = "20px invasion";
@@ -74,6 +79,7 @@ SpaceShip.prototype.draw = function () {
     this.ctx.fillText("D Turn", this.v[0][0], this.v[0][1] + 30);
     this.ctx.restore();
   }
+
   this.ctx.closePath();
   this.ctx.stroke();
   this.ctx.fill();
@@ -82,14 +88,23 @@ SpaceShip.prototype.draw = function () {
   if (this.posX < 0) {
     this.dx *= -1;
   }
+
   if (this.posY < 0) {
     this.dy *= -1;
   }
+
   if (this.posX > this.canvas.width) {
     this.dx *= -1;
   }
+
   if (this.posY > this.canvas.height) {
     this.dy *= -1;
+  }
+
+  if (this.throttle) {
+    this.ctx.fillStyle = "red";
+    this.ctx.fill();
+    this.ctx.restore();
   }
 };
 
@@ -106,8 +121,7 @@ SpaceShip.prototype.move = function () {
     this.tutorial = false;
     this.throttle = true;
   } else {
-    this.dx *= 0.99;
-    this.dy *= 0.99;
+    this.throttle = false;
   }
 
   if (map[A_KEY]) {
@@ -119,21 +133,31 @@ SpaceShip.prototype.move = function () {
   }
 
   if (this.throttle) {
-    this.dx += Math.cos(this.angle) * 10;
-    this.dy += Math.sin(this.angle) * 10;
+    this.dx += Math.cos(this.angle) * 0.1;
+    this.dy += Math.sin(this.angle) * 0.1;
   }
 
-  let speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-  if (speed > this.maxSpeed) {
-    this.dx *= this.maxSpeed / speed;
-    this.dy *= this.maxSpeed / speed;
+  if (this.speed > this.maxSpeed) {
+    this.dx *= 0.99;
+    this.dy *= 0.99;
   }
 
   this.x += this.dx;
   this.y += this.dy;
 
-  if (this.x > this.W + 5) this.x = -5;
-  if (this.x < -6) this.x = this.canvas.width + 6;
-  if (this.y > this.H + 5) this.y = -5;
-  if (this.y < -6) this.y = this.canvas.height + 6;
+  if (this.x > this.W + 5) {
+    this.x = -5;
+  }
+
+  if (this.x < -6) {
+    this.x = this.canvas.width + 6;
+  }
+
+  if (this.y > this.H + 5) {
+    this.y = -5;
+  }
+
+  if (this.y < -6) {
+    this.y = this.canvas.height + 6;
+  }
 };
