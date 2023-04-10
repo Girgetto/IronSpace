@@ -5,9 +5,9 @@ const D_KEY = 68;
 const W_KEY = 87;
 const spaceShipColor = "#FFF";
 
-function SpaceShip() {
-  this.canvas = document.getElementById("myCanvas");
-  this.ctx = this.canvas.getContext("2d");
+function SpaceShip(ctx, canvas) {
+  this.canvas = canvas;
+  this.ctx = ctx;
   this.posX = 50;
   this.posY = this.canvas.height / 2;
   this.v = [

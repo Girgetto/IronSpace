@@ -1,12 +1,13 @@
 $(document).ready(() => {
-  const spaceShip = new SpaceShip();
-  const game = new Game(spaceShip.ctx);
+  const context = new Context();
+  const spaceShip = new SpaceShip(context.ctx, context.canvas);
+  const game = new Game(context.ctx);
   let interval = null;
   let planets = null;
   let goal = null;
   const time = 1000;
-  const isMLOn = false;
   const SCORE = 1000;
+  const gameOverCounter = 0;
 
   function draw() {
     spaceShip.draw();
@@ -75,10 +76,7 @@ $(document).ready(() => {
     if (checkIfGameOver()) {
       game.level = 7;
       game.firstClick = true;
-    }
-
-    if (isMLOn) {
-      tenserFlow.train();
+      gameOverCounter++;
     }
   }
 
@@ -108,12 +106,4 @@ $(document).ready(() => {
       startGame();
     }
   });
-
-  const tenserFlow = new TF(
-    spaceShip,
-    () => clearInterval(interval),
-    game,
-    resetGame,
-    startGame
-  );
 });
