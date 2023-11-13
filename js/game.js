@@ -88,6 +88,11 @@ Game.prototype.setLevel = function () {
     level4(this.ctx),
   ];
 
+  if (this.level > 4) {
+    this.winFrame();
+    return false;
+  }
+
   this.planets = levels[this.level].planets;
 
   this.goal = levels[this.level].goal;

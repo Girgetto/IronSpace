@@ -34,7 +34,7 @@ $(document).ready(() => {
     game.score = SCORE;
     game.setLevel();
     goal = new Goal(game.goal);
-    planets = game.planets.map((planet) => new Planets(planet));
+    planets = game.planets.map((planet) => new Planet(planet));
     game.firstClick = true;
   }
 
@@ -46,7 +46,7 @@ $(document).ready(() => {
       game.score = SCORE;
       resetSpaceShip();
       goal = new Goal(game.goal);
-      planets = game.planets.map((planet) => new Planets(planet));
+      planets = game.planets.map((planet) => new Planet(planet));
     }
   }
 

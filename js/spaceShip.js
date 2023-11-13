@@ -26,28 +26,28 @@ function SpaceShip(ctx, canvas) {
   this.isTurningLeft = false;
   this.maxSpeed = 5;
   this.speed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
-  this.gravityFormula = (planet) =>
-    (G_CONSTANT * planet.mass) / Math.pow(distance, 2);
+  this.gravityFormula = (planet, distance) =>
+  (G_CONSTANT * planet.mass) / (distance * distance);
+  this.baseImage = new Image();
+  this.baseImage.src = './img/spaceship.png';
+  this.baseImage.onload = () => {
+    this.imageLoaded = true;
+  };
 }
 
 SpaceShip.prototype.collision = function (planet) {
-  diffX = planet.posX - this.posX;
-  diffY = planet.posY - this.posY;
-  distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
-
-  if (planet.posX > this.posX || planet.posY > this.posY) {
-    this.dx += this.gravityFormula(planet);
-    this.dy += this.gravityFormula(planet);
-  }
-
-  if (planet.posX < this.posX || planet.posY < this.posY) {
-    this.dx -= this.gravityFormula(planet);
-    this.dy -= this.gravityFormula(planet);
-  }
+  let diffX = planet.posX - this.posX;
+  let diffY = planet.posY - this.posY;
+  let distance = Math.sqrt(diffX * diffX + diffY * diffY);
+  let angle = Math.atan2(diffY, diffX);
 
   if (distance < planet.radius) {
     this.dx = 0;
     this.dy = 0;
+  } else {
+    let force = this.gravityFormula(planet, distance);
+    this.dx += force * Math.cos(angle);
+    this.dy += force * Math.sin(angle);
   }
 };
 
@@ -63,26 +63,18 @@ SpaceShip.prototype.draw = function () {
   this.ctx.save();
   this.ctx.translate(this.posX, this.posY);
   this.ctx.rotate(this.angle);
-  this.ctx.fillStyle = spaceShipColor;
-  this.ctx.strokeStyle = spaceShipColor;
-  this.ctx.beginPath();
-  this.ctx.moveTo(this.v[0][0], this.v[0][1]);
-  this.ctx.lineTo(this.v[1][0], this.v[1][1]);
-  this.ctx.lineTo(this.v[2][0], this.v[2][1]);
 
-  if (this.tutorial) {
-    this.ctx.save();
-    this.ctx.font = "20px invasion";
-    this.ctx.fillStyle = spaceShipColor;
-    this.ctx.fillText("W Forward", this.v[0][0] + 30, this.v[0][1] + 10);
-    this.ctx.fillText("A Turn", this.v[0][0], this.v[0][1] - 10);
-    this.ctx.fillText("D Turn", this.v[0][0], this.v[0][1] + 30);
-    this.ctx.restore();
+  if (this.imageLoaded) {
+    this.ctx.rotate(Math.PI / 2);
+    this.ctx.drawImage(
+      this.baseImage,
+      -this.baseImage.width / 8,
+      -this.baseImage.height / 8,
+      this.baseImage.width / 4,
+      this.baseImage.height / 4
+    );
   }
 
-  this.ctx.closePath();
-  this.ctx.stroke();
-  this.ctx.fill();
   this.ctx.restore();
 
   if (this.posX < 0) {
@@ -99,12 +91,6 @@ SpaceShip.prototype.draw = function () {
 
   if (this.posY > this.canvas.height) {
     this.dy *= -1;
-  }
-
-  if (this.throttle) {
-    this.ctx.fillStyle = "red";
-    this.ctx.fill();
-    this.ctx.restore();
   }
 };
 
@@ -142,22 +128,22 @@ SpaceShip.prototype.move = function () {
     this.dy *= 0.99;
   }
 
-  this.x += this.dx;
-  this.y += this.dy;
+  this.posX += this.dx;
+  this.posY += this.dy;
 
-  if (this.x > this.W + 5) {
-    this.x = -5;
+  if (this.posX > this.W + 5) {
+    this.posY = -5;
   }
 
-  if (this.x < -6) {
-    this.x = this.canvas.width + 6;
+  if (this.posX < -6) {
+    this.posY = this.canvas.width + 6;
   }
 
-  if (this.y > this.H + 5) {
-    this.y = -5;
+  if (this.posX > this.H + 5) {
+    this.posY = -5;
   }
 
-  if (this.y < -6) {
-    this.y = this.canvas.height + 6;
+  if (this.posY < -6) {
+    this.posY = this.canvas.height + 6;
   }
 };

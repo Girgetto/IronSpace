@@ -4,7 +4,7 @@
  * @param  {number} radius - of planet
  * @param  {number} density - of planet
  */
-function Planets({ posX, posY, radius, density }) {
+function Planet({ posX, posY, radius, density }) {
   this.posX = posX;
   this.posY = posY;
   this.radius = radius;
@@ -14,7 +14,7 @@ function Planets({ posX, posY, radius, density }) {
   //this.audio = new Audio("audio/metallic_space_impact.mp3");
 }
 
-Planets.prototype.draw = function (ctx) {
+Planet.prototype.draw = function (ctx) {
   ctx.save();
   ctx.beginPath();
   ctx.filter = "blur(10px)";
@@ -27,7 +27,7 @@ Planets.prototype.draw = function (ctx) {
   ctx.restore();
 };
 
-Planets.prototype.collision = function (ship) {
+Planet.prototype.collision = function (ship) {
   if (
     ship.posX > this.posX - this.radius &&
     ship.posY > this.posY - this.radius &&

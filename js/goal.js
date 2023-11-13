@@ -9,7 +9,7 @@ function Goal({ posX, posY }) {
   this.height = 100;
   this.collision = false;
   this.img = new Image();
-  this.img.src = "img/descarga.png";
+  this.img.src = "./img/target.png";
   //this.audio = new Audio("audio/nextLevel.mp3");
 }
 
