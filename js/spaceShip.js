@@ -103,6 +103,11 @@ SpaceShip.prototype.setListeners = function () {
 };
 
 SpaceShip.prototype.move = function () {
+  var acceleration = 0.2; // Increased acceleration
+  var deceleration = 0.98; // Deceleration factor for smooth easing
+  var angleChange = 0.1; // Factor for how quickly the ship turns
+
+  // Handling the forward thrust
   if (map[W_KEY]) {
     this.tutorial = false;
     this.throttle = true;
@@ -110,40 +115,48 @@ SpaceShip.prototype.move = function () {
     this.throttle = false;
   }
 
+  // Handling the rotation left
   if (map[A_KEY]) {
-    this.angle -= 0.1;
+    this.angle -= angleChange;
   }
 
+  // Handling the rotation right
   if (map[D_KEY]) {
-    this.angle += 0.1;
+    this.angle += angleChange;
   }
 
+  // Apply acceleration if throttle is on
   if (this.throttle) {
-    this.dx += Math.cos(this.angle) * 0.1;
-    this.dy += Math.sin(this.angle) * 0.1;
+    this.dx += Math.cos(this.angle) * acceleration;
+    this.dy += Math.sin(this.angle) * acceleration;
+  } else {
+    // Apply deceleration if throttle is off
+    this.dx *= deceleration;
+    this.dy *= deceleration;
   }
 
-  if (this.speed > this.maxSpeed) {
-    this.dx *= 0.99;
-    this.dy *= 0.99;
+  // Clamp the speed to the maximum speed
+  var currentSpeed = Math.sqrt(this.dx * this.dx + this.dy * this.dy);
+  if (currentSpeed > this.maxSpeed) {
+    this.dx = (this.dx / currentSpeed) * this.maxSpeed;
+    this.dy = (this.dy / currentSpeed) * this.maxSpeed;
   }
 
+  // Update the position
   this.posX += this.dx;
   this.posY += this.dy;
 
+  // Wrap around logic for screen edges
   if (this.posX > this.W + 5) {
+    this.posX = -5;
+  } else if (this.posX < -5) {
+    this.posX = this.W + 5;
+  }
+
+  if (this.posY > this.H + 5) {
     this.posY = -5;
-  }
-
-  if (this.posX < -6) {
-    this.posY = this.canvas.width + 6;
-  }
-
-  if (this.posX > this.H + 5) {
-    this.posY = -5;
-  }
-
-  if (this.posY < -6) {
-    this.posY = this.canvas.height + 6;
+  } else if (this.posY < -5) {
+    this.posY = this.H + 5;
   }
 };
+
