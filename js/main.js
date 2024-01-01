@@ -5,8 +5,7 @@ $(document).ready(() => {
   let interval = null;
   let planets = null;
   let goal = null;
-  const time = 1000;
-  const SCORE = 1000;
+  const timeLeft = 1000;
   const gameOverCounter = 0;
 
   function draw() {
@@ -30,8 +29,7 @@ $(document).ready(() => {
   function resetGame() {
     resetSpaceShip();
     game.level = 0;
-    game.score = time;
-    game.score = SCORE;
+    game.timeLeft = timeLeft;
     game.setLevel();
     goal = new Goal(game.goal);
     planets = game.planets.map((planet) => new Planet(planet));
@@ -42,8 +40,7 @@ $(document).ready(() => {
     if (goal.collision) {
       game.setLevel();
       game.level++;
-      game.score = time;
-      game.score = SCORE;
+      game.timeLeft = timeLeft;
       resetSpaceShip();
       goal = new Goal(game.goal);
       planets = game.planets.map((planet) => new Planet(planet));
@@ -60,7 +57,7 @@ $(document).ready(() => {
   }
 
   function checkIfGameOver() {
-    return game.score <= 0;
+    return game.timeLeft <= 0;
   }
 
   function update() {
@@ -71,7 +68,7 @@ $(document).ready(() => {
       planet.collision(spaceShip);
     });
     checkCollisionsWithGoal();
-    game.score--;
+    game.timeLeft--;
 
     if (checkIfGameOver()) {
       game.level = 7;

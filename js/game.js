@@ -1,6 +1,6 @@
 function Game(ctx) {
   this.level = 0;
-  this.score = 100;
+  this.timeLeft = 100;
   this.planets = [];
   this.goal = {};
   this.firstClick = true;
@@ -52,7 +52,7 @@ Game.prototype.levelText = function () {
     this.ctx.fillText(`LEVEL ${this.level}`, 50, 50);
     this.ctx.fillStyle = "#fff";
     this.ctx.font = "50px invasion";
-    this.ctx.fillText(`SCORE ${this.score}`, this.ctx.canvas.width - 350, 50);
+    this.ctx.fillText(`Time left ${this.timeLeft}`, this.ctx.canvas.width - 550, 50);
     this.ctx.closePath();
     this.ctx.restore();
   }
