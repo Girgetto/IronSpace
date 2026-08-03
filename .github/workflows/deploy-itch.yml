@@ -1,0 +1,35 @@
+name: Deploy to itch.io
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+env:
+  ITCH_TARGET: girgetto/gravity
+  ITCH_CHANNEL: html5
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Stage game files
+        run: |
+          mkdir -p site
+          cp -r index.html css js img font site/
+
+      - name: Install butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
+          unzip -q butler.zip -d butler
+          chmod +x butler/butler
+          ./butler/butler -V
+
+      - name: Push build to itch.io
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: |
+          ./butler/butler push site "$ITCH_TARGET:$ITCH_CHANNEL" --userversion "1.0.${{ github.run_number }}"
